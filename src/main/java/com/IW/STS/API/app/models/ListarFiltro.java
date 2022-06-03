@@ -2,8 +2,6 @@ package com.IW.STS.API.app.models;
 
 import java.util.List;
 
-import org.springframework.ui.Model;
-
 public class ListarFiltro {
 	
 	public List rows;	

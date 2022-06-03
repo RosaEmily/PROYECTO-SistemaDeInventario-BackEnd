@@ -1,17 +1,24 @@
 package com.IW.STS.API.app.models;
+
 import java.sql.Date;
 import java.time.LocalDate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-@Table(name="Proveedor")
-public class Proveedor {
+@Table(name="Cliente")
+public class Cliente {
 	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY) 
 	@Column(unique=true, nullable=false) 
 	private Integer id;
 		
 	@Column(nullable=false)  private String nombre;
+	@Column(nullable=false)  private String apellido;
 	@Column(nullable=false)  private String  doi;
 	@Column(nullable=true)   private String  email;
 	@Column(nullable=false)  private String  tipoDoi;
@@ -83,6 +90,11 @@ public class Proveedor {
 	public void setCreate_at(LocalDate create_at) {
 		this.create_at = create_at;
 	}
-	
+	public String getApellido() {
+		return apellido;
+	}
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
+	}
 	
 }

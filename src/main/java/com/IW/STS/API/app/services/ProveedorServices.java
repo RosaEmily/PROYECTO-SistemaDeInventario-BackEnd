@@ -2,7 +2,10 @@ package com.IW.STS.API.app.services;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -18,12 +21,16 @@ public interface ProveedorServices extends JpaRepository<Proveedor,Integer>{
 	@Query(value="SELECT*FROM Proveedor WHERE estado=true", nativeQuery=true)
 	List<Proveedor> Listar();
 	
-	@Query(value="UPDATE Proveedor SET nombre=:nombre,doi=:doi,email=:email"
-			+ "tipoDoi=:tipoDoi,direccion=:direccion WHERE id=:id", nativeQuery=true)
-	Proveedor Editar(@Param("nombre") String nombre,@Param("doi") String doi,@Param("email") String email
+	@Modifying
+	@Transactional
+	@Query("UPDATE Proveedor SET nombre=:nombre,doi=:doi,email=:email,"
+			+ "tipoDoi=:tipoDoi,direccion=:direccion,estado=:estado,updated_at=NOW() WHERE id=:id")
+	void Editar(@Param("nombre") String nombre,@Param("doi") String doi,@Param("email") String email
 			,@Param("tipoDoi") String tipoDoi,@Param("direccion") String direccion
-			,@Param("id") Integer id);
+			,@Param("id") Integer id,@Param("estado") Boolean estado);
 	
-	@Query(value="UPDATE Proveedor SET estado=false WHERE id=:id", nativeQuery=true)
-	Proveedor Eliminar(@Param("id") Integer id);
+	@Modifying
+	@Transactional
+	@Query("UPDATE Proveedor SET estado=false,deleted_at=NOW() WHERE id=:id")
+	void Eliminar(@Param("id") Integer id);
 }
