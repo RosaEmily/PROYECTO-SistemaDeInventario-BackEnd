@@ -1,6 +1,6 @@
 package com.IW.STS.API.app.models;
 
-public class Filtracion {
+public class Filtro {
 	
 	public  Integer  limit;
 	public  Integer order;

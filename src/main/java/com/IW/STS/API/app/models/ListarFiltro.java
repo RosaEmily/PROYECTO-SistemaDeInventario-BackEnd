@@ -5,7 +5,7 @@ import java.util.List;
 public class ListarFiltro {
 	
 	public List rows;	
-	public Filtracion responseFilter;	
+	public Filtro responseFilter;	
 	
 	public List getRows() {
 		return rows;
@@ -13,10 +13,10 @@ public class ListarFiltro {
 	public void setRows(List rows) {
 		this.rows = rows;
 	}
-	public Filtracion getResponseFilter() {
+	public Filtro getResponseFilter() {
 		return responseFilter;
 	}
-	public void setResponseFilter(Filtracion responseFilter) {
+	public void setResponseFilter(Filtro responseFilter) {
 		this.responseFilter = responseFilter;
 	}	
 

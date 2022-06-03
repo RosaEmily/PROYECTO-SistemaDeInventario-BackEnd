@@ -1,6 +1,8 @@
 package com.IW.STS.API.app.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.IW.STS.API.app.models.Filtracion;
+import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
-import com.IW.STS.API.app.models.Mensaje;
 import com.IW.STS.API.app.models.Proveedor;
 import com.IW.STS.API.app.services.ProveedorServices;
 
@@ -23,9 +24,8 @@ public class ProveedorController {
 	
 	@Autowired
 	private ProveedorServices ProSer;
-	private Filtracion fil =new  Filtracion();
-	private ListarFiltro lis = new ListarFiltro(); 
-	private Mensaje men =new Mensaje();
+	private Filtro fil =new  Filtro();
+	private ListarFiltro lis = new ListarFiltro();
 	
 	@GetMapping("")
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page) {		
@@ -37,16 +37,13 @@ public class ProveedorController {
 	}
 	
 	@PostMapping("/")
-	public Mensaje Guardar(@RequestBody Proveedor P) {
+	public ResponseEntity<String> Guardar(@RequestBody Proveedor P) {
 		if(ProSer.Verificar(P.getDoi())!=null) {
-			men.setStatus(401);
-			men.setMessage("El proveedor ingresado ya existe");
+			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
 			ProSer.save(P);
-			men.setStatus(200);
-			men.setMessage("Proveedor Creado");
+			return ResponseEntity.status(HttpStatus.CREATED).body("201");
 		}
-		return men;	
 	}
 	
 	@GetMapping("/supplier/{id}")
@@ -55,19 +52,15 @@ public class ProveedorController {
 	}
 	
 	@PutMapping("/editar")
-	public Mensaje Editar(@RequestBody Proveedor P) {
+	public ResponseEntity<String> Editar(@RequestBody Proveedor P) {
 		ProSer.Editar(P.getNombre(),P.getDoi() ,P.getEmail(), P.getTipoDoi(), P.getDireccion(), P.getId(),P.getEstado());
-		men.setStatus(200);
-		men.setMessage("Proveedor Editado");
-		return men;	
+		return ResponseEntity.status(HttpStatus.CREATED).body("201");
 	}
 	
 	@DeleteMapping("/{id}")
-	public Mensaje Eliminar(@PathVariable  Integer id) {
+	public ResponseEntity<String> Eliminar(@PathVariable  Integer id) {
 		ProSer.Eliminar(id);
-		men.setStatus(200);
-		men.setMessage("Proveedor Eliminado");
-		return men;	
+		return ResponseEntity.status(HttpStatus.OK).body("200");
 	}
 	
 
