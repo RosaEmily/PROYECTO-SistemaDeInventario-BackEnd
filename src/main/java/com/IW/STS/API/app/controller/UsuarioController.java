@@ -16,6 +16,8 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioServices UsuSer;
 	
+	 
+	
 	@PostMapping("/save")
 	public void Guardar(@RequestBody Usuario U) {
 		UsuSer.save(U);

@@ -4,8 +4,12 @@ import java.time.LocalDate;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name="Proveedor")
+@OnDelete(action=OnDeleteAction.CASCADE)
 public class Proveedor {
 	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY) 
 	@Column(unique=true, nullable=false) 

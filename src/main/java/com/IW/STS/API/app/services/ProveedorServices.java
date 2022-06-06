@@ -13,7 +13,10 @@ import com.IW.STS.API.app.models.Proveedor;
 
 public interface ProveedorServices extends JpaRepository<Proveedor,Integer>{
 	@Query(value="SELECT*FROM Proveedor WHERE doi=:doi", nativeQuery=true)
-	Proveedor Verificar(@Param("doi") String doi);
+	Proveedor Verificar1(@Param("doi") String doi);
+	
+	@Query(value="SELECT*FROM Proveedor WHERE id NOT IN(:id) AND doi=:doi", nativeQuery=true)
+	Proveedor Verificar2(@Param("id") Integer id,@Param("doi") String doi);
 	
 	@Query(value="SELECT*FROM Proveedor WHERE id=:id", nativeQuery=true)
 	Proveedor GetId(@Param("id") Integer id);

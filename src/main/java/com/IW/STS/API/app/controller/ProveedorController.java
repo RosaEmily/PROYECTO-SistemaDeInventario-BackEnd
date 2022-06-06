@@ -38,7 +38,7 @@ public class ProveedorController {
 	
 	@PostMapping("/")
 	public ResponseEntity<String> Guardar(@RequestBody Proveedor P) {
-		if(ProSer.Verificar(P.getDoi())!=null) {
+		if(ProSer.Verificar1(P.getDoi())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
 			ProSer.save(P);
@@ -53,8 +53,12 @@ public class ProveedorController {
 	
 	@PutMapping("/editar")
 	public ResponseEntity<String> Editar(@RequestBody Proveedor P) {
-		ProSer.Editar(P.getNombre(),P.getDoi() ,P.getEmail(), P.getTipoDoi(), P.getDireccion(), P.getId(),P.getEstado());
-		return ResponseEntity.status(HttpStatus.CREATED).body("201");
+		if(ProSer.Verificar2(P.getId(),P.getDoi())!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body("400");
+		}else {
+			ProSer.Editar(P.getNombre(),P.getDoi() ,P.getEmail(), P.getTipoDoi(), P.getDireccion(), P.getId(),P.getEstado());
+			return ResponseEntity.status(HttpStatus.CREATED).body("201");
+		}
 	}
 	
 	@DeleteMapping("/{id}")

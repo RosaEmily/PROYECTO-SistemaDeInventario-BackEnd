@@ -1,5 +1,11 @@
 package com.IW.STS.API.app.controller;
 
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,57 +19,66 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.IW.STS.API.app.models.Producto;
 import com.IW.STS.API.app.models.Cliente;
 import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
-import com.IW.STS.API.app.services.ClienteServices;
+import com.IW.STS.API.app.services.ProductoServices;
 
 @RestController
-@RequestMapping("api/cliente")
-public class ClienteController {
+@RequestMapping("api/producto")
+public class ProductoController {
+	
+	
 	@Autowired
-	private ClienteServices CliSer;
-	private Filtro fil =new  Filtro();
-	private ListarFiltro lis = new ListarFiltro(); 
+	private ProductoServices ProSer;
+	private Filtro fil = new  Filtro();
+	private ListarFiltro lis = new ListarFiltro();
+	
 	
 	@GetMapping("")
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page) {		
-		lis.setRows(CliSer.Listar());
+		lis.setRows(ProSer.findByEstado(true));
 		fil.setLimit(limit);
 		fil.setPage(page);
 		lis.setResponseFilter(fil);
 		return lis;
 	}
 	
-	@PostMapping("/")
-	public ResponseEntity<String> Guardar(@RequestBody Cliente C) {
-		if(CliSer.Verificar1(C.getDoi())!=null) {
+	@PostMapping("")
+	public ResponseEntity<String> Guardar(@RequestBody Producto P) {
+		if(ProSer.findByCodigo(P.getCodigo())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
-			CliSer.save(C);
+			ProSer.save(P);
 			return ResponseEntity.status(HttpStatus.CREATED).body("201");
-		}
+		}				
 	}
 	
-	@GetMapping("/client/{id}")
-	public Cliente IdInfo(@PathVariable  Integer id) {		
-		return CliSer.GetId(id);
+	
+	@GetMapping("/{id}")
+	public Optional<Producto> IdInfo(@PathVariable  Integer id) {		
+		return ProSer.findById(id);		
 	}
+	
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<String> Editar(@RequestBody Cliente C,@PathVariable  Integer id) {
-		if(CliSer.Verificar2(id,C.getDoi())!=null) {
+	public ResponseEntity<String> Editar(@RequestBody Producto P,@PathVariable  Integer id) {
+		if(ProSer.Verificar2(id,P.getCodigo())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
-			CliSer.Editar(C.getNombre(),C.getDoi() ,C.getEmail(), C.getTipoDoi(), C.getDireccion(), id,C.getEstado(),C.getApellido());
+			P.setId(id);			
+			P.setUpdated_at(LocalDate.now());
+			ProSer.save(P);
 			return ResponseEntity.status(HttpStatus.CREATED).body("201");
 		}		
-	}
+	}	
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> Eliminar(@PathVariable  Integer id) {
-		CliSer.Eliminar(id);
+		ProSer.findById(id).get().setEstado(false);
+		ProSer.findById(id).get().setDeleted_at(LocalDate.now());
+		ProSer.save(ProSer.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
 	}
-
 }

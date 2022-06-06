@@ -13,56 +13,57 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.IW.STS.API.app.models.Cliente;
+import com.IW.STS.API.app.models.Categoria;
 import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
-import com.IW.STS.API.app.services.ClienteServices;
+import com.IW.STS.API.app.services.CategoriaServices;
 
 @RestController
-@RequestMapping("api/cliente")
-public class ClienteController {
+@RequestMapping("api/categoria")
+public class CategoriaController {
+	
 	@Autowired
-	private ClienteServices CliSer;
+	private CategoriaServices CatSer;
 	private Filtro fil =new  Filtro();
-	private ListarFiltro lis = new ListarFiltro(); 
+	private ListarFiltro lis = new ListarFiltro();
 	
 	@GetMapping("")
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page) {		
-		lis.setRows(CliSer.Listar());
+		lis.setRows(CatSer.Listar());
 		fil.setLimit(limit);
 		fil.setPage(page);
 		lis.setResponseFilter(fil);
 		return lis;
 	}
 	
-	@PostMapping("/")
-	public ResponseEntity<String> Guardar(@RequestBody Cliente C) {
-		if(CliSer.Verificar1(C.getDoi())!=null) {
+	@PostMapping("")
+	public ResponseEntity<String> Guardar(@RequestBody Categoria C) {
+		if(CatSer.Verificar1(C.getCodigo())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
-			CliSer.save(C);
+			CatSer.save(C);
 			return ResponseEntity.status(HttpStatus.CREATED).body("201");
 		}
 	}
 	
-	@GetMapping("/client/{id}")
-	public Cliente IdInfo(@PathVariable  Integer id) {		
-		return CliSer.GetId(id);
+	@GetMapping("/{id}")
+	public Categoria IdInfo(@PathVariable  Integer id) {		
+		return CatSer.GetId(id);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<String> Editar(@RequestBody Cliente C,@PathVariable  Integer id) {
-		if(CliSer.Verificar2(id,C.getDoi())!=null) {
+	public ResponseEntity<String> Editar(@RequestBody Categoria C,@PathVariable  Integer id) {
+		if(CatSer.Verificar2(id,C.getCodigo())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
-			CliSer.Editar(C.getNombre(),C.getDoi() ,C.getEmail(), C.getTipoDoi(), C.getDireccion(), id,C.getEstado(),C.getApellido());
+			CatSer.Editar(C.getCodigo(),C.getNombre() ,C.getDescripcion());
 			return ResponseEntity.status(HttpStatus.CREATED).body("201");
 		}		
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> Eliminar(@PathVariable  Integer id) {
-		CliSer.Eliminar(id);
+		CatSer.Eliminar(id);
 		return ResponseEntity.status(HttpStatus.OK).body("200");
 	}
 

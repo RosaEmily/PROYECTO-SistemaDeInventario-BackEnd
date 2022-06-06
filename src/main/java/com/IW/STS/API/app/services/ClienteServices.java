@@ -14,12 +14,21 @@ import com.IW.STS.API.app.models.Cliente;
 public interface ClienteServices extends JpaRepository<Cliente,Integer> {
 	
 	@Query(value="SELECT*FROM Cliente WHERE doi=:doi", nativeQuery=true)
-	Cliente Verificar(@Param("doi") String doi);
+	Cliente Verificar1(@Param("doi") String doi);
+	
+	@Query(value="SELECT*FROM Cliente WHERE id NOT IN(:id) AND doi=:doi", nativeQuery=true)
+	Cliente Verificar2(@Param("id") Integer id,@Param("doi") String doi);
 	
 	@Query(value="SELECT*FROM Cliente WHERE id=:id", nativeQuery=true)
 	Cliente GetId(@Param("id") Integer id);
 	
-	@Query(value="SELECT*FROM Cliente WHERE estado=true", nativeQuery=true)
+	@Query(value="SELECT doi as doi, CASE\r\n"
+			+ " WHEN tipo_doi='02' THEN CONCAT(apellido,', ',nombre)   \r\n"
+			+ " ELSE nombre\r\n"
+			+ " END as nombre,	\r\n"
+			+ "	id as id,create_at as create_at,deleted_at as deleted_at,direccion as direccion,\r\n"
+			+ "	email as email,estado as estado,tipo_doi as tipo_doi,updated_at as updated_at ,apellido as apellido\r\n"
+			+ "	FROM Cliente WHERE estado=true;", nativeQuery=true)
 	List<Cliente> Listar();
 	
 	@Modifying
