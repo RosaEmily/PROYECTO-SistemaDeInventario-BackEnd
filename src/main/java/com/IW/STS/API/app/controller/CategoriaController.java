@@ -1,6 +1,12 @@
 package com.IW.STS.API.app.controller;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,21 +30,49 @@ public class CategoriaController {
 	
 	@Autowired
 	private CategoriaServices CatSer;
-	private Filtro fil =new  Filtro();
-	private ListarFiltro lis = new ListarFiltro();
+	
+	@Autowired
+	private Filtro fil;
+	
+	@Autowired
+	private ListarFiltro lis;
+	
 	
 	@GetMapping("")
-	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page) {		
-		lis.setRows(CatSer.Listar());
+	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
+		String codigo="",nombre="";
+		 System.out.println(filter);
+		 if(!filter.equals("nada")) {
+			 String replace0 = filter.replace("\"",""); 
+			 String replace1 = replace0.replace("[","");
+			 String replace2 = replace1.replace("]","");
+			 String replace3 = replace2.replace("{","");
+			 String replace4 = replace3.replace("}","");
+			 String replace5 = replace4.replace("keyContains:","");
+			 String replace6 = replace5.replace("value:",""); 
+			 String [] vect = replace6.split(",");			 
+			 for(int i=0; i<(vect.length/2);i++) {
+				 if(vect[i*2].equals("doi")) {
+					 codigo=vect[i*2+1];
+				 }else {
+					 nombre=vect[i*2+1];
+				 }
+			 }	 		 		 
+		 }		
+		 System.out.println(codigo+" - "+nombre);		
+		
+		lis.setRows(CatSer.findByEstadoAndCodigoStartsWithAndNombreStartsWith(true,codigo,nombre,PageRequest.of(page-1,limit)).getContent());		
 		fil.setLimit(limit);
 		fil.setPage(page);
-		lis.setResponseFilter(fil);
+		fil.setTotal_pages(CatSer.findByEstadoAndCodigoStartsWithAndNombreStartsWith(true,codigo,nombre,PageRequest.of(page-1,limit)).getTotalPages());
+		fil.setTotal_rows((int) CatSer.findByEstadoAndCodigoStartsWithAndNombreStartsWith(true,codigo,nombre,PageRequest.of(page-1,limit)).getTotalElements());
+		lis.setResponseFilter(fil);		 
 		return lis;
 	}
 	
 	@PostMapping("")
 	public ResponseEntity<String> Guardar(@RequestBody Categoria C) {
-		if(CatSer.Verificar1(C.getCodigo())!=null) {
+		if(CatSer.findByCodigo(C.getCodigo())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
 			CatSer.save(C);
@@ -47,23 +81,29 @@ public class CategoriaController {
 	}
 	
 	@GetMapping("/{id}")
-	public Categoria IdInfo(@PathVariable  Integer id) {		
-		return CatSer.GetId(id);
+	public Optional<Categoria> IdInfo(@PathVariable  Integer id) {		
+		return CatSer.findById(id);
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<String> Editar(@RequestBody Categoria C,@PathVariable  Integer id) {
-		if(CatSer.Verificar2(id,C.getCodigo())!=null) {
+		Collection<Integer> idCol = Arrays.asList(id);
+
+		if(CatSer.findByIdNotInAndCodigo(idCol,C.getCodigo())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
-			CatSer.Editar(C.getCodigo(),C.getNombre() ,C.getDescripcion());
+			C.setId(id);			
+			C.setUpdated_at(LocalDate.now());
+			CatSer.save(C);
 			return ResponseEntity.status(HttpStatus.CREATED).body("201");
 		}		
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> Eliminar(@PathVariable  Integer id) {
-		CatSer.Eliminar(id);
+		CatSer.findById(id).get().setEstado(false);
+		CatSer.findById(id).get().setDeleted_at(LocalDate.now());
+		CatSer.save(CatSer.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
 	}
 

@@ -28,8 +28,8 @@ public class Categoria {
 	@Column(nullable=true)  private String  descripcion;
 	@Column(nullable=false)  private String  codigo;
 	@Column(nullable=false)  private Boolean  estado=true;
-	@Column(nullable=true)   private Date updated_at;
-	@Column(nullable=true)   private Date deleted_at;
+	@Column(nullable=true)   private LocalDate updated_at;
+	@Column(nullable=true)   private LocalDate deleted_at;
 	@Column(nullable=true)   private LocalDate create_at=LocalDate.now();
 	
 	
@@ -66,16 +66,16 @@ public class Categoria {
 	public void setEstado(Boolean estado) {
 		this.estado = estado;
 	}
-	public Date getUpdated_at() {
+	public LocalDate getUpdated_at() {
 		return updated_at;
 	}
-	public void setUpdated_at(Date updated_at) {
+	public void setUpdated_at(LocalDate updated_at) {
 		this.updated_at = updated_at;
 	}
-	public Date getDeleted_at() {
+	public LocalDate getDeleted_at() {
 		return deleted_at;
 	}
-	public void setDeleted_at(Date deleted_at) {
+	public void setDeleted_at(LocalDate deleted_at) {
 		this.deleted_at = deleted_at;
 	}
 	public LocalDate getCreate_at() {

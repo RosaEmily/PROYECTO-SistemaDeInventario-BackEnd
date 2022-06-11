@@ -1,41 +1,25 @@
 package com.IW.STS.API.app.services;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Optional;
 
-import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+
 
 import com.IW.STS.API.app.models.Categoria;
 
 public interface CategoriaServices extends JpaRepository<Categoria,Integer> {
 	
-	@Query(value="SELECT*FROM Categoria WHERE codigo=:codigo", nativeQuery=true)
-	Categoria Verificar1(@Param("codigo") String codigo);
+	Categoria findByCodigo(String doi);	
 	
-	@Query(value="SELECT*FROM Categoria WHERE id NOT IN(:id) AND codigo=:codigo", nativeQuery=true)
-	Categoria Verificar2(@Param("id") Integer id,@Param("codigo") String codigo);
+	Optional<Categoria> findById(Integer id);
 	
-	@Query(value="SELECT*FROM Categoria WHERE id=:id", nativeQuery=true)
-	Categoria GetId(@Param("id") Integer id);
+	Page<Categoria> findByEstadoAndCodigoStartsWithAndNombreStartsWith(Boolean estado,String codigo,String nombre,PageRequest pageRequest);	
 	
-	@Query(value="SELECT * FROM Categoria WHERE estado=true;", nativeQuery=true)
-	List<Categoria> Listar();
+	Categoria findByIdNotInAndCodigo(Collection<Integer> id,String doi);
 	
-	@Modifying
-	@Transactional
-	@Query("UPDATE Categoria SET nombre=:nombre,codigo=:codigo"
-			+ ",descripcion=:descripcion,updated_at=NOW()"
-			+ " WHERE id=:id")
-	void Editar(@Param("codigo") String codigo,@Param("nombre") String nombre
-			,@Param("descripcion") String descripcion);
 	
-	@Modifying
-	@Transactional
-	@Query("UPDATE Categoria SET estado=false,deleted_at=NOW() WHERE id=:id")
-	void Eliminar(@Param("id") Integer id);
-
 }

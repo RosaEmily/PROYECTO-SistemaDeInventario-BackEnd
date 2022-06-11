@@ -15,8 +15,8 @@ public class Usuario {
 	  
 
 	  @Column(nullable=false)  private LocalDate usu_created_at=LocalDate.now();
-	  @Column(nullable=true)   private Date usu_updated_at;
-	  @Column(nullable=true)   private Date usu_deleted_at;
+	  @Column(nullable=true)   private LocalDate usu_updated_at;
+	  @Column(nullable=true)   private LocalDate usu_deleted_at;
 	  @Column(nullable=false)  private Boolean usu_estado=true;
 	  @Column(nullable=false)  private String usu_nombre;   
 	  @Column(nullable=false)  private String usu_apellido;   
@@ -35,16 +35,16 @@ public class Usuario {
 	public void setUsu_created_at(LocalDate usu_created_at) {
 		this.usu_created_at = usu_created_at;
 	}
-	public Date getUsu_updated_at() {
+	public LocalDate getUsu_updated_at() {
 		return usu_updated_at;
 	}
-	public void setUsu_updated_at(Date usu_updated_at) {
+	public void setUsu_updated_at(LocalDate usu_updated_at) {
 		this.usu_updated_at = usu_updated_at;
 	}
-	public Date getUsu_deleted_at() {
+	public LocalDate getUsu_deleted_at() {
 		return usu_deleted_at;
 	}
-	public void setUsu_deleted_at(Date usu_deleted_at) {
+	public void setUsu_deleted_at(LocalDate usu_deleted_at) {
 		this.usu_deleted_at = usu_deleted_at;
 	}
 	public Boolean getUsu_estado() {

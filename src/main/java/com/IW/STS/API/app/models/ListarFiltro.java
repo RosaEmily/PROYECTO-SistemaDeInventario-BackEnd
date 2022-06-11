@@ -2,6 +2,9 @@ package com.IW.STS.API.app.models;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
+@Component("Listafiltro")
 public class ListarFiltro {
 	
 	public List rows;	

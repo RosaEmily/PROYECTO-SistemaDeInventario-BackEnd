@@ -1,49 +1,38 @@
 package com.IW.STS.API.app.models;
 
+import org.springframework.stereotype.Component;
+
+@Component("filtro")
 public class Filtro {
 	
 	public  Integer  limit;
-	public  Integer order;
 	public  Integer page;
-	public  Integer sort;
-	public  Integer pages;
-	public  Integer _count;
+	public  Integer total_pages;
+	public  Integer total_rows;
 	
 	public Integer getLimit() {
 		return limit;
 	}
 	public void setLimit(Integer limit) {
 		this.limit = limit;
-	}
-	public Integer getOrder() {
-		return order;
-	}
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
+	}	
 	public Integer getPage() {
 		return page;
 	}
 	public void setPage(Integer page) {
 		this.page = page;
+	}	
+	public Integer getTotal_pages() {
+		return total_pages;
 	}
-	public Integer getSort() {
-		return sort;
+	public void setTotal_pages(Integer total_pages) {
+		this.total_pages = total_pages;
 	}
-	public void setSort(Integer sort) {
-		this.sort = sort;
+	public Integer getTotal_rows() {
+		return total_rows;
 	}
-	public Integer getPages() {
-		return pages;
-	}
-	public void setPages(Integer pages) {
-		this.pages = pages;
-	}
-	public Integer get_count() {
-		return _count;
-	}
-	public void set_count(Integer _count) {
-		this._count = _count;
+	public void setTotal_rows(Integer total_rows) {
+		this.total_rows = total_rows;
 	}
 	
 	

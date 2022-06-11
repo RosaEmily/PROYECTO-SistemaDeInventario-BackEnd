@@ -1,6 +1,12 @@
 package com.IW.STS.API.app.controller;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,21 +30,48 @@ public class ProveedorController {
 	
 	@Autowired
 	private ProveedorServices ProSer;
-	private Filtro fil =new  Filtro();
-	private ListarFiltro lis = new ListarFiltro();
+	
+	@Autowired
+	private Filtro fil;
+	
+	@Autowired
+	private ListarFiltro lis;
 	
 	@GetMapping("")
-	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page) {		
-		lis.setRows(ProSer.Listar());
+	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
+		String doi="",nombre="";
+		 System.out.println(filter);
+		 if(!filter.equals("nada")) {
+			 String replace0 = filter.replace("\"",""); 
+			 String replace1 = replace0.replace("[","");
+			 String replace2 = replace1.replace("]","");
+			 String replace3 = replace2.replace("{","");
+			 String replace4 = replace3.replace("}","");
+			 String replace5 = replace4.replace("keyContains:","");
+			 String replace6 = replace5.replace("value:",""); 
+			 String [] vect = replace6.split(",");			 
+			 for(int i=0; i<(vect.length/2);i++) {
+				 if(vect[i*2].equals("doi")) {
+					 doi=vect[i*2+1];
+				 }else {
+					 nombre=vect[i*2+1];
+				 }
+			 }	 		 		 
+		 }		
+		 System.out.println(doi+" - "+nombre);		
+		
+		lis.setRows(ProSer.findByEstadoAndDoiStartsWithAndNombreStartsWith(true,doi,nombre,PageRequest.of(page-1,limit)).getContent());		
 		fil.setLimit(limit);
 		fil.setPage(page);
-		lis.setResponseFilter(fil);
+		fil.setTotal_pages(ProSer.findByEstadoAndDoiStartsWithAndNombreStartsWith(true,doi,nombre,PageRequest.of(page-1,limit)).getTotalPages());
+		fil.setTotal_rows((int) ProSer.findByEstadoAndDoiStartsWithAndNombreStartsWith(true,doi,nombre,PageRequest.of(page-1,limit)).getTotalElements());
+		lis.setResponseFilter(fil);		 
 		return lis;
 	}
 	
-	@PostMapping("/")
+	@PostMapping("")
 	public ResponseEntity<String> Guardar(@RequestBody Proveedor P) {
-		if(ProSer.Verificar1(P.getDoi())!=null) {
+		if(ProSer.findByDoi(P.getDoi())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
 			ProSer.save(P);
@@ -46,24 +79,30 @@ public class ProveedorController {
 		}
 	}
 	
-	@GetMapping("/supplier/{id}")
-	public Proveedor IdInfo(@PathVariable  Integer id) {		
-		return ProSer.GetId(id);
+	@GetMapping("/{id}")
+	public Optional<Proveedor> IdInfo(@PathVariable  Integer id) {		
+		return ProSer.findById(id);
 	}
 	
-	@PutMapping("/editar")
-	public ResponseEntity<String> Editar(@RequestBody Proveedor P) {
-		if(ProSer.Verificar2(P.getId(),P.getDoi())!=null) {
+	@PutMapping("/{id}")
+	public ResponseEntity<String> Editar(@RequestBody Proveedor P,@PathVariable  Integer id) {
+		Collection<Integer> idCol = Arrays.asList(id);
+
+		if(ProSer.findByIdNotInAndDoi(idCol,P.getDoi())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
-			ProSer.Editar(P.getNombre(),P.getDoi() ,P.getEmail(), P.getTipoDoi(), P.getDireccion(), P.getId(),P.getEstado());
+			P.setId(id);			
+			P.setUpdated_at(LocalDate.now());
+			ProSer.save(P);
 			return ResponseEntity.status(HttpStatus.CREATED).body("201");
 		}
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> Eliminar(@PathVariable  Integer id) {
-		ProSer.Eliminar(id);
+		ProSer.findById(id).get().setEstado(false);
+		ProSer.findById(id).get().setDeleted_at(LocalDate.now());
+		ProSer.save(ProSer.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
 	}
 	

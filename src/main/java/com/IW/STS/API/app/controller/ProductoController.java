@@ -1,9 +1,8 @@
 package com.IW.STS.API.app.controller;
 
-import java.sql.Date;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.IW.STS.API.app.models.Producto;
-import com.IW.STS.API.app.models.Cliente;
 import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
 import com.IW.STS.API.app.services.ProductoServices;
@@ -32,8 +30,13 @@ public class ProductoController {
 	
 	@Autowired
 	private ProductoServices ProSer;
-	private Filtro fil = new  Filtro();
-	private ListarFiltro lis = new ListarFiltro();
+	
+	@Autowired
+	private Filtro fil;
+	
+	@Autowired
+	private ListarFiltro lis;
+	
 	
 	
 	@GetMapping("")
@@ -64,7 +67,10 @@ public class ProductoController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<String> Editar(@RequestBody Producto P,@PathVariable  Integer id) {
-		if(ProSer.Verificar2(id,P.getCodigo())!=null) {
+		
+		Collection<Integer> idCol = Arrays.asList(id);
+
+		if(ProSer.findByIdNotInAndCodigo(idCol,P.getCodigo())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
 			P.setId(id);			
