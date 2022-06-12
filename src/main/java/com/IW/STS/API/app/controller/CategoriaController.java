@@ -3,6 +3,7 @@ package com.IW.STS.API.app.controller;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,10 @@ public class CategoriaController {
 	@Autowired
 	private ListarFiltro lis;
 	
+	@GetMapping("/lista")
+	public List<Categoria> Listar() {		
+		return CatSer.findByEstado(true);
+	}
 	
 	@GetMapping("")
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
@@ -52,7 +57,7 @@ public class CategoriaController {
 			 String replace6 = replace5.replace("value:",""); 
 			 String [] vect = replace6.split(",");			 
 			 for(int i=0; i<(vect.length/2);i++) {
-				 if(vect[i*2].equals("doi")) {
+				 if(vect[i*2].equals("codigo")) {
 					 codigo=vect[i*2+1];
 				 }else {
 					 nombre=vect[i*2+1];
@@ -72,6 +77,7 @@ public class CategoriaController {
 	
 	@PostMapping("")
 	public ResponseEntity<String> Guardar(@RequestBody Categoria C) {
+
 		if(CatSer.findByCodigo(C.getCodigo())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
