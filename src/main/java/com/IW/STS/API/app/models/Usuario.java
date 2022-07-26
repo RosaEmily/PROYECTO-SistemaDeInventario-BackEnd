@@ -1,27 +1,31 @@
 package com.IW.STS.API.app.models;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name="Usuario")
+@Table(name="usuario")
 public class Usuario {
 	
 	  @Id  @GeneratedValue(strategy=GenerationType.IDENTITY) 
-	  @Column(unique=true, nullable=false) 
+	  @Column(unique=true, nullable=false,name="id_usuario") 
 	  private Integer id;
 	  
 
-	  @Column(nullable=false)  private LocalDate usu_created_at=LocalDate.now();
-	  @Column(nullable=true)   private LocalDate usu_updated_at;
-	  @Column(nullable=true)   private LocalDate usu_deleted_at;
-	  @Column(nullable=false)  private Boolean usu_estado=true;
-	  @Column(nullable=false)  private String usu_nombre;   
-	  @Column(nullable=false)  private String usu_apellido;   
-	  @Column(nullable=false)  private String usu_email;  
-	  @Column(nullable=false)  private String usu_password;
+	  @Column(nullable=false)  private LocalDate created_at=LocalDate.now();
+	  @Column(nullable=true)   private LocalDate updated_at;
+	  @Column(nullable=true)   private LocalDate deleted_at;
+	  @Column(nullable=false)  private Boolean estado=true;
+	  @Column(nullable=false)  private Boolean restablecer=false;
+	  @Column(nullable=false)  private String nombre;   
+	  @Column(nullable=false)  private String apellido;   
+	  @Column(nullable=false)  private String email;  
+	  @Column(nullable=false)  private String password= "password";
+	  
+		@ManyToOne
+		@JoinColumn(name="id_rol", referencedColumnName = "id_rol")
+		private Rol rol;
 	  
 	public Integer getId() {
 		return id;
@@ -29,54 +33,67 @@ public class Usuario {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public LocalDate getUsu_created_at() {
-		return usu_created_at;
+	
+	public LocalDate getCreated_at() {
+		return created_at;
 	}
-	public void setUsu_created_at(LocalDate usu_created_at) {
-		this.usu_created_at = usu_created_at;
+	public void setCreated_at(LocalDate created_at) {
+		this.created_at = created_at;
 	}
-	public LocalDate getUsu_updated_at() {
-		return usu_updated_at;
+	public LocalDate getUpdated_at() {
+		return updated_at;
 	}
-	public void setUsu_updated_at(LocalDate usu_updated_at) {
-		this.usu_updated_at = usu_updated_at;
+	public void setUpdated_at(LocalDate updated_at) {
+		this.updated_at = updated_at;
 	}
-	public LocalDate getUsu_deleted_at() {
-		return usu_deleted_at;
+	public LocalDate getDeleted_at() {
+		return deleted_at;
 	}
-	public void setUsu_deleted_at(LocalDate usu_deleted_at) {
-		this.usu_deleted_at = usu_deleted_at;
+	public void setDeleted_at(LocalDate deleted_at) {
+		this.deleted_at = deleted_at;
 	}
-	public Boolean getUsu_estado() {
-		return usu_estado;
+	public Boolean getEstado() {
+		return estado;
 	}
-	public void setUsu_estado(Boolean usu_estado) {
-		this.usu_estado = usu_estado;
+	public void setEstado(Boolean estado) {
+		this.estado = estado;
 	}
-	public String getUsu_nombre() {
-		return usu_nombre;
+	public String getNombre() {
+		return nombre;
 	}
-	public void setUsu_nombre(String usu_nombre) {
-		this.usu_nombre = usu_nombre;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
-	public String getUsu_apellido() {
-		return usu_apellido;
+	public String getApellido() {
+		return apellido;
 	}
-	public void setUsu_apellido(String usu_apellido) {
-		this.usu_apellido = usu_apellido;
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
 	}
-	public String getUsu_email() {
-		return usu_email;
+	public String getEmail() {
+		return email;
 	}
-	public void setUsu_email(String usu_email) {
-		this.usu_email = usu_email;
+	public void setEmail(String email) {
+		this.email = email;
 	}
-	public String getUsu_password() {
-		return usu_password;
+	public String getPassword() {
+		return password;
 	}
-	public void setUsu_password(String usu_password) {
-		this.usu_password = usu_password;
-	}   
-		
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public Rol getRol() {
+		return rol;
+	}
+	public void setRol(Rol rol) {
+		this.rol = rol;
+	}
+	public Boolean getRestablecer() {
+		return restablecer;
+	}
+	public void setRestablecer(Boolean restablecer) {
+		this.restablecer = restablecer;
+	}
+	
 	
 }

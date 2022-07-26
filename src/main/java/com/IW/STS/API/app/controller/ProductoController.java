@@ -3,6 +3,7 @@ package com.IW.STS.API.app.controller;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,9 +70,8 @@ public class ProductoController {
 				 }
 			 }	 		 		 
 		 }		
-		 System.out.println(codigo+" - "+nombre+" - "+categoria+" - "+stock);		
 		
-		lis.setRows(ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockGreaterThanEqual(true,codigo,nombre,
+		/*lis.setRows(ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockGreaterThanEqual(true,codigo,nombre,
 				CatSer.findByNombreStartsWith(categoria),stock,PageRequest.of(page-1,limit)).getContent());		
 		fil.setLimit(limit);
 		fil.setPage(page);
@@ -79,15 +79,27 @@ public class ProductoController {
 				CatSer.findByNombreStartsWith(categoria),stock,PageRequest.of(page-1,limit)).getTotalPages());
 		fil.setTotal_rows((int) ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockGreaterThanEqual(true,codigo,nombre,
 				CatSer.findByNombreStartsWith(categoria),stock,PageRequest.of(page-1,limit)).getTotalElements());
+		lis.setResponseFilter(fil);*/
+		lis.setRows(ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockGreaterThanEqual(true,codigo,nombre,
+				CatSer.findByCodigoStartsWith(categoria),stock,PageRequest.of(page-1,limit)).getContent());		
+		fil.setLimit(limit);
+		fil.setPage(page);
+		fil.setTotal_pages(ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockGreaterThanEqual(true,codigo,nombre,
+				CatSer.findByCodigoStartsWith(categoria),stock,PageRequest.of(page-1,limit)).getTotalPages());
+		fil.setTotal_rows((int) ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockGreaterThanEqual(true,codigo,nombre,
+				CatSer.findByCodigoStartsWith(categoria),stock,PageRequest.of(page-1,limit)).getTotalElements());
 		lis.setResponseFilter(fil);
 		
 		return lis;
 	}
 	
+	@GetMapping("/all")
+	public List<Producto> ListarAll() {		
+		return ProSer.findAll();
+	}
+	
 	@PostMapping("")
 	public ResponseEntity<String> Guardar(@RequestBody Producto P) {
-		 System.out.println(P.getCategoria());		
-
 		if(ProSer.findByCodigo(P.getCodigo())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {

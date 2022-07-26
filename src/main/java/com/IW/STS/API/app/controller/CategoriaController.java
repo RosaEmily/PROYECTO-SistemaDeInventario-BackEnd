@@ -64,8 +64,6 @@ public class CategoriaController {
 				 }
 			 }	 		 		 
 		 }		
-		 System.out.println(codigo+" - "+nombre);		
-		
 		lis.setRows(CatSer.findByEstadoAndCodigoStartsWithAndNombreStartsWith(true,codigo,nombre,PageRequest.of(page-1,limit)).getContent());		
 		fil.setLimit(limit);
 		fil.setPage(page);

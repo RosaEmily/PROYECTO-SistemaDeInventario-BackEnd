@@ -22,15 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
-import com.IW.STS.API.app.models.Proveedor;
-import com.IW.STS.API.app.services.ProveedorServices;
+import com.IW.STS.API.app.models.Rol;
+import com.IW.STS.API.app.services.RolServices;
 
 @RestController
-@RequestMapping("api/proveedor")
-public class ProveedorController {
+@RequestMapping("api/rol")
+public class RolController {
 	
+
 	@Autowired
-	private ProveedorServices ProSer;
+	private RolServices RolSer;
 	
 	@Autowired
 	private Filtro fil;
@@ -38,9 +39,15 @@ public class ProveedorController {
 	@Autowired
 	private ListarFiltro lis;
 	
+
+	@GetMapping("/listar")
+	public List<Rol> listAll(){
+		return RolSer.findByEstado(true);		
+	}
+	
 	@GetMapping("")
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
-		String doi="",nombre="";
+		String rol="";
 		 System.out.println(filter);
 		 if(!filter.equals("nada")) {
 			 String replace0 = filter.replace("\"",""); 
@@ -52,65 +59,55 @@ public class ProveedorController {
 			 String replace6 = replace5.replace("value:",""); 
 			 String [] vect = replace6.split(",");			 
 			 for(int i=0; i<(vect.length/2);i++) {
-				 if(vect[i*2].equals("doi")) {
-					 doi=vect[i*2+1];
-				 }else {
-					 nombre=vect[i*2+1];
+				 if(vect[i*2].equals("rol")) {
+					 rol=vect[i*2+1];
 				 }
 			 }	 		 		 
 		 }		
-		lis.setRows(ProSer.findByEstadoAndDoiStartsWithAndNombreStartsWith(true,doi,nombre,PageRequest.of(page-1,limit)).getContent());		
+		lis.setRows(RolSer.findByEstadoAndRolStartsWith(true,rol,PageRequest.of(page-1,limit)).getContent());		
 		fil.setLimit(limit);
 		fil.setPage(page);
-		fil.setTotal_pages(ProSer.findByEstadoAndDoiStartsWithAndNombreStartsWith(true,doi,nombre,PageRequest.of(page-1,limit)).getTotalPages());
-		fil.setTotal_rows((int) ProSer.findByEstadoAndDoiStartsWithAndNombreStartsWith(true,doi,nombre,PageRequest.of(page-1,limit)).getTotalElements());
+		fil.setTotal_pages(RolSer.findByEstadoAndRolStartsWith(true,rol,PageRequest.of(page-1,limit)).getTotalPages());
+		fil.setTotal_rows((int) RolSer.findByEstadoAndRolStartsWith(true,rol,PageRequest.of(page-1,limit)).getTotalElements());
 		lis.setResponseFilter(fil);		 
 		return lis;
 	}
 	
-	
-	@GetMapping("/all")
-	public List<Proveedor> ListarAll() {		
-		return ProSer.findAll();
-	}
-	
-	
 	@PostMapping("")
-	public ResponseEntity<String> Guardar(@RequestBody Proveedor P) {
-		if(ProSer.findByDoi(P.getDoi())!=null) {
+	public ResponseEntity<String> Guardar(@RequestBody Rol r) {
+
+		if(RolSer.findByRol(r.getRol())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
-			ProSer.save(P);
+			RolSer.save(r);
 			return ResponseEntity.status(HttpStatus.CREATED).body("201");
 		}
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Proveedor> IdInfo(@PathVariable  Integer id) {		
-		return ProSer.findById(id);
+	public Optional<Rol> IdInfo(@PathVariable  Integer id) {		
+		return RolSer.findById(id);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<String> Editar(@RequestBody Proveedor P,@PathVariable  Integer id) {
+	public ResponseEntity<String> Editar(@RequestBody Rol r,@PathVariable  Integer id) {
 		Collection<Integer> idCol = Arrays.asList(id);
-
-		if(ProSer.findByIdNotInAndDoi(idCol,P.getDoi())!=null) {
+		if(RolSer.findByIdNotInAndRol(idCol,r.getRol())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
-			P.setId(id);			
-			P.setUpdated_at(LocalDate.now());
-			ProSer.save(P);
+			r.setId(id);			
+			r.setUpdated_at(LocalDate.now());
+			RolSer.save(r);
 			return ResponseEntity.status(HttpStatus.CREATED).body("201");
-		}
+		}		
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> Eliminar(@PathVariable  Integer id) {
-		ProSer.findById(id).get().setEstado(false);
-		ProSer.findById(id).get().setDeleted_at(LocalDate.now());
-		ProSer.save(ProSer.findById(id).get());				
+		RolSer.findById(id).get().setEstado(false);
+		RolSer.findById(id).get().setDeleted_at(LocalDate.now());
+		RolSer.save(RolSer.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
 	}
-	
 
 }

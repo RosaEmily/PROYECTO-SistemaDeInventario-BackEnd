@@ -59,9 +59,7 @@ public class ClienteController {
 					 nombre=vect[i*2+1];
 				 }
 			 }	 		 		 
-		 }		
-		 System.out.println(doi+" - "+nombre);		
-		
+		 }	
 		lis.setRows(CliSer.findByEstadoAndDoiStartsWithAndNombreStartsWith(true,doi,nombre,PageRequest.of(page-1,limit)).getContent());		
 		fil.setLimit(limit);
 		fil.setPage(page);

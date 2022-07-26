@@ -1,9 +1,7 @@
 package com.IW.STS.API.app.models;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,11 +15,11 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name="Producto")
+@Table(name="producto")
 @OnDelete(action=OnDeleteAction.CASCADE)
 public class Producto {
 	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY) 
-	@Column(unique=true, nullable=false) 
+	@Column(unique=true, nullable=false,name="id_producto") 
 	private Integer id;
 		
 	@Column(nullable=false)  private String nombre;
@@ -30,13 +28,14 @@ public class Producto {
 	@Column(nullable=false)  private String  marca;
 	@Column(nullable=false)  private Integer  stock;
 	@Column(nullable=false)  private String  unidad;
+	@Column(nullable=false)  private Double  precio;
 	@Column(nullable=false)  private Boolean  estado=true;
 	@Column(nullable=true)   private LocalDate updated_at;
 	@Column(nullable=true)   private LocalDate deleted_at;
-	@Column(nullable=true)   private LocalDate create_at=LocalDate.now();
+	@Column(nullable=true)   private LocalDate created_at=LocalDate.now();
 	
 	@ManyToOne
-	@JoinColumn(name="id_categoria", referencedColumnName = "id")
+	@JoinColumn(name="id_categoria", referencedColumnName = "id_categoria")
 	private Categoria categoria;
 
 	public Integer getId() {
@@ -119,12 +118,12 @@ public class Producto {
 		this.deleted_at = deleted_at;
 	}
 
-	public LocalDate getCreate_at() {
-		return create_at;
+	public LocalDate getCreated_at() {
+		return created_at;
 	}
 
-	public void setCreate_at(LocalDate create_at) {
-		this.create_at = create_at;
+	public void setCreated_at(LocalDate created_at) {
+		this.created_at = created_at;
 	}
 
 	public Categoria getCategoria() {
@@ -134,7 +133,13 @@ public class Producto {
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
-	
-	
+
+	public Double getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio(Double precio) {
+		this.precio = precio;
+	}
 
 }

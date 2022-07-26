@@ -1,10 +1,8 @@
 package com.IW.STS.API.app.models;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,12 +14,13 @@ import javax.persistence.Table;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+
 @Entity
-@Table(name="Categoria")
+@Table(name="categoria")
 @OnDelete(action=OnDeleteAction.CASCADE)
 public class Categoria {
 	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY) 
-	@Column(unique=true, nullable=false) 
+	@Column(unique=true, nullable=false,name="id_categoria") 
 	private Integer id;
 		
 	@Column(nullable=false)  private String nombre;
@@ -30,7 +29,7 @@ public class Categoria {
 	@Column(nullable=false)  private Boolean  estado=true;
 	@Column(nullable=true)   private LocalDate updated_at;
 	@Column(nullable=true)   private LocalDate deleted_at;
-	@Column(nullable=true)   private LocalDate create_at=LocalDate.now();
+	@Column(nullable=true)   private LocalDate created_at=LocalDate.now();
 	
 	
 	@OneToMany(mappedBy="categoria")
@@ -78,11 +77,11 @@ public class Categoria {
 	public void setDeleted_at(LocalDate deleted_at) {
 		this.deleted_at = deleted_at;
 	}
-	public LocalDate getCreate_at() {
-		return create_at;
+	public LocalDate getCreated_at() {
+		return created_at;
 	}
-	public void setCreate_at(LocalDate create_at) {
-		this.create_at = create_at;
+	public void setCreated_at(LocalDate created_at) {
+		this.created_at = created_at;
 	}
 	
 

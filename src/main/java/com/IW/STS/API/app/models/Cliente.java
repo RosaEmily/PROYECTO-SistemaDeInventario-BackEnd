@@ -14,11 +14,11 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name="Cliente")
+@Table(name="cliente")
 @OnDelete(action=OnDeleteAction.CASCADE)
 public class Cliente {
 	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY) 
-	@Column(unique=true, nullable=false) 
+	@Column(unique=true, nullable=false,name="id_cliente") 
 	private Integer id;
 		
 	@Column(nullable=false)  private String nombre;
@@ -30,7 +30,7 @@ public class Cliente {
 	@Column(nullable=false)  private Boolean  estado=true;
 	@Column(nullable=true)   private LocalDate updated_at;
 	@Column(nullable=true)   private LocalDate deleted_at;
-	@Column(nullable=true)   private LocalDate create_at=LocalDate.now();
+	@Column(nullable=true)   private LocalDate created_at=LocalDate.now();
 	
 	
 	public Boolean getEstado() {
@@ -88,11 +88,11 @@ public class Cliente {
 	public void setDeleted_at(LocalDate deleted_at) {
 		this.deleted_at = deleted_at;
 	}
-	public LocalDate getCreate_at() {
-		return create_at;
+	public LocalDate getCreated_at() {
+		return created_at;
 	}
-	public void setCreate_at(LocalDate create_at) {
-		this.create_at = create_at;
+	public void setCreated_at(LocalDate created_at) {
+		this.created_at = created_at;
 	}
 	public String getApellido() {
 		return apellido;

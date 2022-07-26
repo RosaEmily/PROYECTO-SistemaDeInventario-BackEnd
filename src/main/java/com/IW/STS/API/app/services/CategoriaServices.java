@@ -18,7 +18,7 @@ public interface CategoriaServices extends JpaRepository<Categoria,Integer> {
 	
 	List<Categoria> findByEstado(Boolean estado);	
 	
-	List<Categoria> findByNombreStartsWith(String nombre);	
+	List<Categoria> findByCodigoStartsWith(String nombre);	
 
 	
 	Optional<Categoria> findById(Integer id);
