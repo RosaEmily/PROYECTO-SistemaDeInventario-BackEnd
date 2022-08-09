@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.IW.STS.API.app.models.Cliente;
 import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
+import com.IW.STS.API.app.models.Proveedor;
 import com.IW.STS.API.app.services.ClienteServices;
 
 
@@ -78,6 +79,12 @@ public class ClienteController {
 			return ResponseEntity.status(HttpStatus.CREATED).body("201");
 		}
 	}
+	
+	@GetMapping("/all")
+	public List<Cliente> ListarAll() {		
+		return CliSer.findAll();
+	}
+	
 	
 	@GetMapping("/{id}")
 	public Optional<Cliente> IdInfo(@PathVariable  Integer id) {		

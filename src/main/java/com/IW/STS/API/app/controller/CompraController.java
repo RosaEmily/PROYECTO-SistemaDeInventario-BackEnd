@@ -165,7 +165,7 @@ public class CompraController {
 			for(int j=0; j<ComServ.getById(id).getDetalle_producto().size();j++) {							
 				Producto P = ProSer.getById(ComServ.getById(id).getDetalle_producto().get(j).getProducto().getId());
 				P.setId(ComServ.getById(id).getDetalle_producto().get(j).getProducto().getId());
-				Integer cantidad= P.getStock() + ComServ.getById(id).getDetalle_producto().get(j).getCantidad();
+				Integer cantidad= P.getStock() - ComServ.getById(id).getDetalle_producto().get(j).getCantidad();
 				P.setStock(cantidad);
 				ProSer.save(P);
 			}

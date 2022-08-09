@@ -22,7 +22,6 @@ public class Cliente {
 	private Integer id;
 		
 	@Column(nullable=false)  private String nombre;
-	@Column(nullable=false)  private String apellido;
 	@Column(nullable=false)  private String  doi;
 	@Column(nullable=true)   private String  email;
 	@Column(nullable=false)  private String  tipoDoi;
@@ -93,12 +92,6 @@ public class Cliente {
 	}
 	public void setCreated_at(LocalDate created_at) {
 		this.created_at = created_at;
-	}
-	public String getApellido() {
-		return apellido;
-	}
-	public void setApellido(String apellido) {
-		this.apellido = apellido;
 	}
 	
 }

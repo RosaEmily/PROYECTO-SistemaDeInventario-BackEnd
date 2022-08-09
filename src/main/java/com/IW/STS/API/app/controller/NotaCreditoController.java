@@ -20,9 +20,14 @@ import com.IW.STS.API.app.models.Compra;
 import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
 import com.IW.STS.API.app.models.NotaCreditoCompra;
+import com.IW.STS.API.app.models.NotaCreditoVenta;
+import com.IW.STS.API.app.models.Venta;
+import com.IW.STS.API.app.services.ClienteServices;
 import com.IW.STS.API.app.services.CompraServices;
 import com.IW.STS.API.app.services.NotaCreditoCompraServices;
+import com.IW.STS.API.app.services.NotaCreditoVentaServices;
 import com.IW.STS.API.app.services.ProveedorServices;
+import com.IW.STS.API.app.services.VentaServices;
 
 @RestController
 @RequestMapping("api/notaCredito")
@@ -35,6 +40,12 @@ public class NotaCreditoController {
 	private NotaCreditoCompraServices nccs;
 	
 	@Autowired
+	private VentaServices VenServ;
+	
+	@Autowired
+	private NotaCreditoVentaServices nccvs;
+	
+	@Autowired
 	private Filtro fil;
 	
 	@Autowired
@@ -43,8 +54,11 @@ public class NotaCreditoController {
 	@Autowired
 	private ProveedorServices ProSer;
 	
+	@Autowired
+	private ClienteServices ClitSer;
 	
-	@GetMapping("")
+	
+	@GetMapping("/compra")
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
 		String serie="",correlativo="",doi="",nombre="";
 		int stock=0;
@@ -89,9 +103,62 @@ public class NotaCreditoController {
 		
 		return lis;
 	}
+	
+
+	@GetMapping("/venta")
+	public ListarFiltro ListarV(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
+		String serie="",correlativo="",doi="",nombre="";
+		int stock=0;
+		System.out.print(filter);
+		 if(!filter.equals("nada")) {
+			 String replace0 = filter.replace("\"",""); 
+			 String replace1 = replace0.replace("[","");
+			 String replace2 = replace1.replace("]","");
+			 String replace3 = replace2.replace("{","");
+			 String replace4 = replace3.replace("}","");
+			 String replace5 = replace4.replace("keyContains:","");
+			 String replace6 = replace5.replace("value:",""); 
+			 String [] vect = replace6.split(",");			 
+			 for(int i=0; i<(vect.length/2);i++) {
+				 if(vect[i*2].equals("venta.serie")) {
+					 serie=vect[i*2+1];
+				 }else if(vect[i*2].equals("venta.correlativo")) {
+					 correlativo=vect[i*2+1];
+				 }else if(vect[i*2].equals("venta.cliente.nombre")) {
+					 nombre=vect[i*2+1];
+				 }else {
+					 doi=vect[i*2+1];
+				 }
+			 }	 		 		 
+		 }		
+		
+		lis.setRows(nccvs.findByEstadoAndVentaIn(true,
+				VenServ.findByEstadoAndSerieStartsWithAndCorrelativoStartsWithAndClienteIn(true,serie,correlativo,
+						ClitSer.findByEstadoAndDoiStartsWithAndNombreStartsWith(true, doi, nombre)),
+				PageRequest.of(page-1,limit)).getContent());		
+		fil.setLimit(limit);
+		fil.setPage(page);
+		fil.setTotal_pages(nccvs.findByEstadoAndVentaIn(true,
+				VenServ.findByEstadoAndSerieStartsWithAndCorrelativoStartsWithAndClienteIn(true,serie,correlativo,
+						ClitSer.findByEstadoAndDoiStartsWithAndNombreStartsWith(true, doi, nombre)),
+				PageRequest.of(page-1,limit)).getTotalPages());
+		fil.setTotal_rows((int) nccvs.findByEstadoAndVentaIn(true,
+				VenServ.findByEstadoAndSerieStartsWithAndCorrelativoStartsWithAndClienteIn(true,serie,correlativo,
+						ClitSer.findByEstadoAndDoiStartsWithAndNombreStartsWith(true, doi, nombre)),
+				PageRequest.of(page-1,limit)).getTotalElements());
+		lis.setResponseFilter(fil);
+		
+		return lis;
+	}
 	@PostMapping("/compra")
 	public ResponseEntity<String> GuardarCompra(@RequestBody() NotaCreditoCompra ncc){
 		nccs.save(ncc);
+		return ResponseEntity.status(HttpStatus.CREATED).body("201");		
+	}
+	
+	@PostMapping("/venta")
+	public ResponseEntity<String> GuardarCompra(@RequestBody() NotaCreditoVenta ncc){
+		nccvs.save(ncc);
 		return ResponseEntity.status(HttpStatus.CREATED).body("201");		
 	}
 	
@@ -100,12 +167,26 @@ public class NotaCreditoController {
 		return nccs.metodoCompra();
 	}
 	
-	@DeleteMapping("/{id}")
+	@GetMapping("/Listventas")
+	public List<Venta> Ventas() {						
+		return nccvs.metodoVenta();
+	}
+	
+	@DeleteMapping("/compra/{id}")
 	public ResponseEntity<String> Eliminar(@PathVariable  Integer id) {
 		nccs.findById(id).get().setEstado(false);
 		nccs.findById(id).get().setDeleted_at(LocalDate.now());
 		nccs.save(nccs.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
 	}
+	
+	@DeleteMapping("/venta/{id}")
+	public ResponseEntity<String> EliminarVenta(@PathVariable  Integer id) {
+		nccvs.findById(id).get().setEstado(false);
+		nccvs.findById(id).get().setDeleted_at(LocalDate.now());
+		nccvs.save(nccvs.findById(id).get());				
+		return ResponseEntity.status(HttpStatus.OK).body("200");
+	}
+
 
 }

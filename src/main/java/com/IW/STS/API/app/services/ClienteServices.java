@@ -1,6 +1,7 @@
 package com.IW.STS.API.app.services;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,7 +20,12 @@ public interface ClienteServices extends JpaRepository<Cliente,Integer> {
 	
 	Page<Cliente> findByEstadoAndDoiStartsWithAndNombreStartsWith(Boolean estado,String doi,String nombre,PageRequest pageRequest);	
 	
+	List<Cliente> findByEstadoAndDoiStartsWithAndNombreStartsWith(Boolean estado,String doi,String nombre);	
+
+	
 	Cliente findByIdNotInAndDoi(Collection<Integer> id,String doi);
+	
+	List<Cliente> findByNombreStartsWith(String nombre);
 	
 	@Query(value="SELECT doi as doi, CASE\r\n"
 			+ " WHEN tipo_doi='02' THEN CONCAT(apellido,', ',nombre)   \r\n"

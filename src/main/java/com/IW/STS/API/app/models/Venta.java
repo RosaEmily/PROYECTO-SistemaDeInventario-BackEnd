@@ -58,7 +58,7 @@ public class Venta {
 	private Cliente cliente;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_compra")
+	@JoinColumn(name = "id_venta")
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
 	private List<DetalleProductoVenta> DetalleProductoVenta;
 
