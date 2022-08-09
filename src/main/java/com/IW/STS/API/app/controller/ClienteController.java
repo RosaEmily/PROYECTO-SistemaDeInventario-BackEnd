@@ -3,6 +3,7 @@ package com.IW.STS.API.app.controller;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +103,6 @@ public class ClienteController {
 		CliSer.findById(id).get().setDeleted_at(LocalDate.now());
 		CliSer.save(CliSer.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
-	}
+	}	
 
 }

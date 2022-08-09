@@ -186,5 +186,11 @@ public class CompraController {
 			return ResponseEntity.status(HttpStatus.CREATED).body("201");
 		}		
 	}
+	
+
+	@GetMapping("/detalle")
+	public List<Compra> DetalleProducto() {		
+		return ComServ.findByEstado(true);
+	}
 
 }
