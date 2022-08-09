@@ -9,19 +9,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.IW.STS.API.app.models.Rol;
 import com.IW.STS.API.app.models.Usuario;
 
 public interface UsuarioServices extends JpaRepository<Usuario,Integer>{
 	
-	@Query(value="SELECT*FROM Usuario WHERE estado=:estado", nativeQuery=true)
+	/*@Query(value="SELECT*FROM Usuario WHERE estado=:estado", nativeQuery=true)
 	List<Usuario> ListarUsuario(@Param("estado") boolean estado);
 	
 	@Query(value="SELECT*FROM Usuario WHERE email=:email AND password=:password", nativeQuery=true)
-	Usuario Login(@Param("email") String email,@Param("password") String password);
+	Usuario Login(@Param("email") String email,@Param("password") String password);*/
 	
-	Page<Usuario> findByEstadoAndNombreStartsWithAndApellidoStartsWith(Boolean estado,String nombre,String apellido,PageRequest pageRequest);	
+	Page<Usuario> findByEstadoAndNombreStartsWithAndApellidoStartsWithAndRolIn
+	(Boolean estado,String nombre,String apellido,Collection<Rol> rol,PageRequest pageRequest);	
 	
 	Usuario findByIdNotInAndEmail(Collection<Integer> id,String email);
 	
 	Usuario findByEmail(String email);
+	
 }

@@ -48,7 +48,6 @@ public class ProductoController {
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
 		String codigo="",nombre="",categoria="";
 		int stock=0;
-		 System.out.println(filter);
 		 if(!filter.equals("nada")) {
 			 String replace0 = filter.replace("\"",""); 
 			 String replace1 = replace0.replace("[","");

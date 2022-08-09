@@ -1,5 +1,4 @@
 package com.IW.STS.API.app.models;
-import java.sql.Date;
 import java.time.LocalDate;
 
 import javax.persistence.*;
@@ -24,7 +23,6 @@ public class Proveedor {
 	@Column(nullable=true)   private LocalDate updated_at;
 	@Column(nullable=true)   private LocalDate deleted_at;
 	@Column(nullable=true)   private LocalDate created_at=LocalDate.now();
-	
 	
 	public Boolean getEstado() {
 		return estado;

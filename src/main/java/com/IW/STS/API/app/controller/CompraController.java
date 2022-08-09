@@ -3,6 +3,9 @@ package com.IW.STS.API.app.controller;
 
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +29,8 @@ import com.IW.STS.API.app.models.Producto;
 import com.IW.STS.API.app.models.DetalleProductoCompra;
 import com.IW.STS.API.app.services.CompraServices;
 import com.IW.STS.API.app.services.ProductoServices;
+import com.IW.STS.API.app.services.ProveedorServices;
+
 
 @RestController
 @RequestMapping("api/compra")
@@ -37,6 +43,9 @@ public class CompraController {
 	private ProductoServices ProSer;
 	
 	@Autowired
+	private ProveedorServices ProvSer;
+	
+	@Autowired
 	private Filtro fil;
 	
 	@Autowired
@@ -46,7 +55,6 @@ public class CompraController {
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
 		String serie="",correlativo="",proveedor="";
 		int stock=0;
-		 System.out.println(filter);
 		 if(!filter.equals("nada")) {
 			 String replace0 = filter.replace("\"",""); 
 			 String replace1 = replace0.replace("[","");
@@ -67,14 +75,14 @@ public class CompraController {
 			 }	 		 		 
 		 }		
 	
-		lis.setRows(ComServ.findByEstadoAndSerieStartsWithAndCorrelativoStartsWith(true,serie,correlativo,
-				PageRequest.of(page-1,limit)).getContent());		
+		lis.setRows(ComServ.findByEstadoAndSerieStartsWithAndCorrelativoStartsWithAndProveedorIn(true,serie,correlativo
+				,ProvSer.findByNombreStartsWith(proveedor),PageRequest.of(page-1,limit)).getContent());		
 		fil.setLimit(limit);
 		fil.setPage(page);
-		fil.setTotal_pages(ComServ.findByEstadoAndSerieStartsWithAndCorrelativoStartsWith(true,serie,correlativo,
-				PageRequest.of(page-1,limit)).getTotalPages());
-		fil.setTotal_rows((int) ComServ.findByEstadoAndSerieStartsWithAndCorrelativoStartsWith(true,serie,correlativo,
-				PageRequest.of(page-1,limit)).getTotalElements());
+		fil.setTotal_pages(ComServ.findByEstadoAndSerieStartsWithAndCorrelativoStartsWithAndProveedorIn(true,serie,correlativo
+				,ProvSer.findByNombreStartsWith(proveedor),PageRequest.of(page-1,limit)).getTotalPages());
+		fil.setTotal_rows((int) ComServ.findByEstadoAndSerieStartsWithAndCorrelativoStartsWithAndProveedorIn(true,serie,correlativo
+				,ProvSer.findByNombreStartsWith(proveedor),PageRequest.of(page-1,limit)).getTotalElements());
 		lis.setResponseFilter(fil);
 		
 		return lis;
@@ -95,6 +103,7 @@ public class CompraController {
 			com.setCreated_at(C.getCreated_at());
 			com.setProveedor(C.getProveedor());
 			com.setTotal(C.getTotal());
+			com.setTipodoc(C.getTipodoc());
 			
 			for(int i=0; i<C.getDetalle_producto().size();i++) {
 				DetalleProductoCompra dp = new DetalleProductoCompra();
@@ -102,12 +111,10 @@ public class CompraController {
 				dp.setPrecio(C.getDetalle_producto().get(i).getPrecio());
 				dp.setProducto(C.getDetalle_producto().get(i).getProducto());
 				
-				Producto P = new Producto();
-				P=C.getDetalle_producto().get(i).getProducto();
-				Integer cantidad= C.getDetalle_producto().get(i).getProducto().getStock() - C.getDetalle_producto().get(i).getCantidad();
+				Producto P = ProSer.getById(C.getDetalle_producto().get(i).getProducto().getId());
+				Integer cantidad=P.getStock() + C.getDetalle_producto().get(i).getCantidad();
 				P.setStock(cantidad);
-				ProSer.save(P);
-				
+				ProSer.save(P);				
 				com.addDetalleProducto(dp);
 			}
 			ComServ.save(com);		
@@ -121,6 +128,63 @@ public class CompraController {
 		ComServ.findById(id).get().setDeleted_at(LocalDate.now());
 		ComServ.save(ComServ.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
+	}
+	
+	@GetMapping("/{id}")
+	public Compra Editar(@PathVariable  Integer id) {						
+		return ComServ.findById(id).get();
+	}
+	
+	@GetMapping("/all")
+	public List<Compra> All() {						
+		return ComServ.findByEstado(true);
+	}
+	
+	@GetMapping("/ListCompra")
+	public List<Compra> ListCompras() {						
+		return ComServ.ListCompra();
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<String> Update(@RequestBody() Compra C,@PathVariable  Integer id) {
+		Collection<Integer> idCol = Arrays.asList(id);
+		if(ComServ.findByIdNotInAndCorrelativoAndSerie(idCol,C.getCorrelativo(),C.getSerie())!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body("400");
+		}else {			
+			Compra com = ComServ.getById(id);
+			com.setCorrelativo(C.getCorrelativo());
+			com.setDescripcion(C.getDescripcion());
+			com.setMoneda(C.getMoneda());
+			com.setTipo_cambio(C.getTipo_cambio());
+			com.setEntidad_direccion(C.getEntidad_direccion());
+			com.setSerie(C.getSerie());
+			com.setCreated_at(C.getCreated_at());
+			com.setProveedor(C.getProveedor());
+			com.setTotal(C.getTotal());
+			com.setTipodoc(C.getTipodoc());
+			for(int j=0; j<ComServ.getById(id).getDetalle_producto().size();j++) {							
+				Producto P = ProSer.getById(ComServ.getById(id).getDetalle_producto().get(j).getProducto().getId());
+				P.setId(ComServ.getById(id).getDetalle_producto().get(j).getProducto().getId());
+				Integer cantidad= P.getStock() + ComServ.getById(id).getDetalle_producto().get(j).getCantidad();
+				P.setStock(cantidad);
+				ProSer.save(P);
+			}
+			ComServ.EliminarDetalle(id);
+			for(int i=0; i<C.getDetalle_producto().size();i++) {
+				DetalleProductoCompra dp = new DetalleProductoCompra();
+				dp.setCantidad(C.getDetalle_producto().get(i).getCantidad());
+				dp.setPrecio(C.getDetalle_producto().get(i).getPrecio());
+				dp.setProducto(C.getDetalle_producto().get(i).getProducto());
+				
+				Producto P = ProSer.getById(C.getDetalle_producto().get(i).getProducto().getId());
+				Integer cantidad=P.getStock() + C.getDetalle_producto().get(i).getCantidad();
+				P.setStock(cantidad);
+				ProSer.save(P);				
+				com.addDetalleProducto(dp);
+			}
+			ComServ.save(com);		
+			return ResponseEntity.status(HttpStatus.CREATED).body("201");
+		}		
 	}
 
 }

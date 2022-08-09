@@ -1,6 +1,7 @@
 package com.IW.STS.API.app.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -20,10 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.IW.STS.API.app.classs.Datos;
 import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
 import com.IW.STS.API.app.models.Proveedor;
 import com.IW.STS.API.app.services.ProveedorServices;
+
 
 @RestController
 @RequestMapping("api/proveedor")
@@ -41,7 +44,6 @@ public class ProveedorController {
 	@GetMapping("")
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
 		String doi="",nombre="";
-		 System.out.println(filter);
 		 if(!filter.equals("nada")) {
 			 String replace0 = filter.replace("\"",""); 
 			 String replace1 = replace0.replace("[","");
@@ -72,6 +74,19 @@ public class ProveedorController {
 	@GetMapping("/all")
 	public List<Proveedor> ListarAll() {		
 		return ProSer.findAll();
+	}
+	
+	
+	@GetMapping("/prueba")
+	public  List<Datos> ListarPrueba() {	
+		List<Datos> listDatos = new ArrayList<Datos>();
+		for(Proveedor pro: ProSer.findAll()) {
+			Datos  d= new Datos();
+			d.setDireccion(pro.getDireccion());
+			d.setDoi(pro.getDoi());
+			listDatos.add(d);
+		}		
+		return listDatos;
 	}
 	
 	

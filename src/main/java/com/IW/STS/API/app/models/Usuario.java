@@ -22,6 +22,8 @@ public class Usuario {
 	  @Column(nullable=false)  private String apellido;   
 	  @Column(nullable=false)  private String email;  
 	  @Column(nullable=false)  private String password= "password";
+	  @Column(nullable=true)   private String foto;
+
 	  
 		@ManyToOne
 		@JoinColumn(name="id_rol", referencedColumnName = "id_rol")
@@ -94,6 +96,10 @@ public class Usuario {
 	public void setRestablecer(Boolean restablecer) {
 		this.restablecer = restablecer;
 	}
-	
-	
+	public String getFoto() {
+		return foto;
+	}
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
 }

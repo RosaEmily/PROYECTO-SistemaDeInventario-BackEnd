@@ -29,12 +29,23 @@ public class Compra {
 	@Column(unique=true, nullable=false,name="id_compra") 
 	private Integer id;
 		
-	@Column(nullable=false)  private String entidad_direccion;
-	@Column(nullable=true)  private String  moneda;
-	@Column(nullable=false)  private String  serie;
-	@Column(nullable=false)  private String  correlativo;
-	@Column(nullable=false)  private String  descripcion;
-	@Column(nullable=false)  private Double  tipo_cambio;
+	@Column(nullable=false,name="entidad_direccion")  
+	private String entidaddireccion;
+	
+	@Column(nullable=true) 
+	private String  moneda;
+	
+	@Column(nullable=false)  
+	private String  serie;
+	
+	@Column(nullable=false)  
+	private String  correlativo;
+	
+	@Column(nullable=false)  
+	private String  descripcion;
+	
+	@Column(nullable=false)  private String  tipodoc;
+	@Column(nullable=false,name="tipo_cambio")  private Double  tipocambio;
 	@Column(nullable=false)  private Double  total;
 	@Column(nullable=false)  private Boolean  estado=true;
 	@Column(nullable=true)   private LocalDate updated_at;
@@ -53,8 +64,16 @@ public class Compra {
 	
 	public Compra() {
 		this.DetalleProductoCompra = new ArrayList<DetalleProductoCompra>();
-	}
+	}	
 	
+	public String getTipodoc() {
+		return tipodoc;
+	}
+
+	public void setTipodoc(String tipodoc) {
+		this.tipodoc = tipodoc;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -64,11 +83,11 @@ public class Compra {
 	}
 
 	public String getEntidad_direccion() {
-		return entidad_direccion;
+		return entidaddireccion;
 	}
 
 	public void setEntidad_direccion(String entidad_direccion) {
-		this.entidad_direccion = entidad_direccion;
+		this.entidaddireccion = entidad_direccion;
 	}
 
 	public String getMoneda() {
@@ -104,11 +123,11 @@ public class Compra {
 	}	
 
 	public Double getTipo_cambio() {
-		return tipo_cambio;
+		return tipocambio;
 	}
 
 	public void setTipo_cambio(Double tipo_cambio) {
-		this.tipo_cambio = tipo_cambio;
+		this.tipocambio = tipo_cambio;
 	}
 
 	public Boolean getEstado() {

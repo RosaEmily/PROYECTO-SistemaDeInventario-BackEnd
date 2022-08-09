@@ -46,7 +46,6 @@ public class CategoriaController {
 	@GetMapping("")
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
 		String codigo="",nombre="";
-		 System.out.println(filter);
 		 if(!filter.equals("nada")) {
 			 String replace0 = filter.replace("\"",""); 
 			 String replace1 = replace0.replace("[","");

@@ -48,7 +48,6 @@ public class RolController {
 	@GetMapping("")
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
 		String rol="";
-		 System.out.println(filter);
 		 if(!filter.equals("nada")) {
 			 String replace0 = filter.replace("\"",""); 
 			 String replace1 = replace0.replace("[","");

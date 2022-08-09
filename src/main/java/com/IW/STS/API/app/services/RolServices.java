@@ -14,6 +14,8 @@ public interface RolServices extends JpaRepository<Rol,Integer>{
 	
 	Page<Rol> findByEstadoAndRolStartsWith(Boolean estado,String rol,PageRequest pageRequest);	
 	
+	List<Rol> findByRolStartsWith(String rol);	
+
 	Rol findByIdNotInAndRol(Collection<Integer> id,String rol);
 	
 	Rol findByRol(String rol);
