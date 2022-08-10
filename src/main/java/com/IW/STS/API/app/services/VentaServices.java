@@ -36,5 +36,29 @@ public interface VentaServices extends JpaRepository<Venta,Integer> {
 	@Transactional
 	@Query(value="Delete from detalle_producto_venta WHERE id_venta=:id", nativeQuery=true)
 	void EliminarDetalle(@Param("id") int id);
+	
+
+	@Query(value="Select COUNT(id_producto) as cantidad \r\n"
+			+ "from detalle_producto_venta GROUP BY id_producto\r\n"
+			+ "ORDER BY COUNT(id_producto) DESC LIMIT 10", nativeQuery=true)
+	List<Integer> CantidadTop10();
+	
+	@Query(value="Select p.nombre as nombres\r\n"
+			+ "from detalle_producto_venta dpv INNER JOIN producto p  \r\n"
+			+ "ON dpv.id_producto=p.id_producto GROUP BY p.id_producto\r\n"
+			+ "ORDER BY COUNT(p.id_producto) DESC LIMIT 10", nativeQuery=true)
+	List<String> NombresTop10();
+	
+	@Query(value="Select COUNT(dpv.id_producto) AS CANTIDAD\r\n"
+			+ "from detalle_producto_venta dpv INNER JOIN venta v \r\n"
+			+ "ON v.id_venta=dpv.id_venta GROUP BY MONTH(v.created_at)\r\n"
+			+ "ORDER BY MONTH(v.created_at)", nativeQuery=true)
+	List<Integer> CantidadMes();
+	
+	@Query(value="Select  MONTHNAME(v.created_at) AS Mes\r\n"
+			+ "from detalle_producto_venta dpv INNER JOIN venta v \r\n"
+			+ "ON v.id_venta=dpv.id_venta GROUP BY MONTH(v.created_at)\r\n"
+			+ "ORDER BY MONTH(v.created_at)", nativeQuery=true)
+	List<String> NombreMes();
 
 }

@@ -37,4 +37,6 @@ public interface ClienteServices extends JpaRepository<Cliente,Integer> {
 	Page<Cliente> Listar(PageRequest page2Request);
 	
 
+	
+
 }

@@ -189,5 +189,25 @@ public class VentaController {
 	public List<Venta> DetalleProducto() {		
 		return VentServ.findByEstado(true);
 	}
+	
+	@GetMapping("/cantidadTOP10")
+	public List<Integer> Top10Cantidad() {		
+		return VentServ.CantidadTop10();
+	}
+	
+	@GetMapping("/nombresTOP10")
+	public List<String> NombresTop10() {		
+		return VentServ.NombresTop10();
+	}
+	
+	@GetMapping("/CantidadMes")
+	public List<Integer> CantidadMes() {		
+		return VentServ.CantidadMes();
+	}
+	
+	@GetMapping("/NombreMes")
+	public List<String> NombreMes() {		
+		return VentServ.NombreMes();
+	}
 
 }

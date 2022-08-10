@@ -20,5 +20,5 @@ public interface NotaCreditoVentaServices extends JpaRepository<NotaCreditoVenta
 	
 	@Query("SELECT C FROM Venta C WHERE NOT EXISTS (SELECT NCC.venta FROM NotaCreditoVenta NCC WHERE NCC.estado=true AND C=NCC.venta) AND C.estado=True")
 	List<Venta> metodoVenta();
-
+	
 }
