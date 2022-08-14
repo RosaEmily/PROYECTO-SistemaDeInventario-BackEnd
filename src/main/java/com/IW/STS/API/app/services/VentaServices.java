@@ -187,5 +187,73 @@ public interface VentaServices extends JpaRepository<Venta,Integer> {
 			+ "			ORDER BY COUNT(dpv.id_producto) DESC LIMIT 10", nativeQuery=true)
 	List<String> NombresTop10Anio2(@Param("anio") String anio,@Param("mes") Integer mes);
 	
+	@Query(value="SELECT p.doi as doi, COUNT(p.id_proveedor) as cantidad FROM compra c \r\n"
+			+ "INNER JOIN proveedor p \r\n"
+			+ "ON c.id_proveedor=p.id_proveedor\r\n"
+			+ "GROUP BY p.id_proveedor\r\n"
+			+ "ORDER BY p.id_proveedor\r\n"
+			+ "LIMIT 10", nativeQuery=true)
+	List<String> Top10Proveedor();
+	
+	@Query(value="SELECT c.doi as doi, COUNT(c.id_cliente) as cantidad FROM venta v\r\n"
+			+ "INNER JOIN cliente c \r\n"
+			+ "ON v.id_cliente=c.id_cliente\r\n"
+			+ "GROUP BY c.id_cliente\r\n"
+			+ "ORDER BY c.id_cliente\r\n"
+			+ "LIMIT 10", nativeQuery=true)
+	List<String> Top10Cliente();
+	
+	@Query(value="SELECT p.doi as doi, COUNT(p.id_proveedor) as cantidad FROM compra c \r\n"
+			+ "INNER JOIN proveedor p \r\n"
+			+ "ON c.id_proveedor=p.id_proveedor\r\n"
+			+ "WHERE YEAR(c.created_at)=:anio GROUP BY p.id_proveedor\r\n"
+			+ "ORDER BY p.id_proveedor\r\n"
+			+ "LIMIT 10", nativeQuery=true)
+	List<String> Top10ProveedorAnio(@Param("anio") String anio);
+	
+	@Query(value="SELECT c.doi as doi, COUNT(c.id_cliente) as cantidad FROM venta v\r\n"
+			+ "INNER JOIN cliente c \r\n"
+			+ "ON v.id_cliente=c.id_cliente\r\n"
+			+ "WHERE YEAR(v.created_at)=:anio GROUP BY c.id_cliente\r\n"
+			+ "ORDER BY c.id_cliente\r\n"
+			+ "LIMIT 10", nativeQuery=true)
+	List<String> Top10ClienteAnio(@Param("anio") String anio);
+	
+	@Query(value="SELECT p.doi as doi, COUNT(p.id_proveedor) as cantidad FROM compra c \r\n"
+			+ "INNER JOIN proveedor p \r\n"
+			+ "ON c.id_proveedor=p.id_proveedor\r\n"
+			+ "WHERE MONTH(c.created_at)=:mes GROUP BY p.id_proveedor\r\n"
+			+ "ORDER BY p.id_proveedor\r\n"
+			+ "LIMIT 10", nativeQuery=true)
+	List<String> Top10ProveedorMes(@Param("mes") Integer mes);
+	
+	@Query(value="SELECT c.doi as doi, COUNT(c.id_cliente) as cantidad FROM venta v\r\n"
+			+ "INNER JOIN cliente c \r\n"
+			+ "ON v.id_cliente=c.id_cliente\r\n"
+			+ "WHERE MONTH(v.created_at)=:mes GROUP BY c.id_cliente\r\n"
+			+ "ORDER BY c.id_cliente\r\n"
+			+ "LIMIT 10", nativeQuery=true)
+	List<String> Top10ClienteMes(@Param("mes") Integer mes);
+	
+	@Query(value="SELECT p.doi as doi, COUNT(p.id_proveedor) as cantidad FROM compra c \r\n"
+			+ "INNER JOIN proveedor p \r\n"
+			+ "ON c.id_proveedor=p.id_proveedor\r\n"
+			+ "WHERE YEAR(v.created_at)=:anio AND MONTH(c.created_at)=:mes GROUP BY p.id_proveedor\r\n"
+			+ "ORDER BY p.id_proveedor\r\n"
+			+ "LIMIT 10", nativeQuery=true)
+	List<String> Top10ProveedorMesAnio(@Param("anio") String anio,@Param("mes") Integer mes);
+	
+	@Query(value="SELECT c.doi as doi, COUNT(c.id_cliente) as cantidad FROM venta v\r\n"
+			+ "INNER JOIN cliente c \r\n"
+			+ "ON v.id_cliente=c.id_cliente\r\n"
+			+ "WHERE  YEAR(v.created_at)=:anio AND MONTH(v.created_at)=:mes GROUP BY c.id_cliente\r\n"
+			+ "ORDER BY c.id_cliente\r\n"
+			+ "LIMIT 10", nativeQuery=true)
+	List<String> Top10ClienteMesAnio(@Param("anio") String anio,@Param("mes") Integer mes);
+	
+	
+	
+	
+	
 
 }

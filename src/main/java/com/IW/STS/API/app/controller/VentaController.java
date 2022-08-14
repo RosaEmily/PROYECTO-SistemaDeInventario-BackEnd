@@ -285,5 +285,45 @@ public class VentaController {
 		return VentServ.NombresTop10Anio2(anio,mes);
 	}
 	
+	@GetMapping("/Top10Proveedor")
+	public List<String> Top10Proveedor() {		
+		return VentServ.Top10Proveedor();
+	}
+	
+	@GetMapping("/Top10Cliente")
+	public List<String> Top10Cliente() {		
+		return VentServ.Top10Cliente();
+	}
+	
+	@GetMapping("/Top10ProveedorAnio/{anio}")
+	public List<String> Top10ProveedorAnio(@PathVariable String anio) {		
+		return VentServ.Top10ProveedorAnio(anio);
+	}
+	
+	@GetMapping("/Top10ClienteAnio/{anio}")
+	public List<String> Top10ClienteAnio(@PathVariable String anio) {		
+		return VentServ.Top10ClienteAnio(anio);
+	}
+	
+	@GetMapping("/Top10ProveedorMes/{mes}")
+	public List<String> Top10ProveedorMes(@PathVariable Integer mes) {		
+		return VentServ.Top10ProveedorMes(mes);
+	}
+	
+	@GetMapping("/Top10ClienteMes/{mes}")
+	public List<String> Top10ClienteMes(@PathVariable Integer mes) {		
+		return VentServ.Top10ClienteMes(mes);
+	}
+	
+	@GetMapping("/Top10ProveedorMesAnio/{anio}/{mes}")
+	public List<String> Top10ProveedorMesAnio(@PathVariable String anio,@PathVariable Integer mes) {		
+		return VentServ.Top10ProveedorMesAnio(anio,mes);
+	}
+	
+	@GetMapping("/Top10ClienteMesAnio/{anio}/{mes}")
+	public List<String> Top10ClienteMesAnio(@PathVariable String anio,@PathVariable Integer mes) {		
+		return VentServ.Top10ClienteMesAnio(anio,mes);
+	}
+	
 
 }
