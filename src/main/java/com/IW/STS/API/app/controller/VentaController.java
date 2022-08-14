@@ -209,5 +209,81 @@ public class VentaController {
 	public List<String> NombreMes() {		
 		return VentServ.NombreMes();
 	}
+	
+	@GetMapping("/Anio")
+	public List<String> Anio() {		
+		return VentServ.Anio();
+	}
+	
+	@GetMapping("/MesTotal")
+	public List<String> MesTotal() {		
+		return VentServ.MesTotal();
+	}
+	
+	@GetMapping("/MesAnio/{anio}")
+	public List<String> MesAnio(@PathVariable String anio) {		
+		return VentServ.MesAnio(anio);
+	}
+	
+	@GetMapping("/CantidadMesParam/{anio}")
+	public List<Integer> CantidadMesParam(@PathVariable String anio) {		
+		return VentServ.CantidadMesParam(anio);
+	}
+	
+	@GetMapping("/NombreMesParam/{anio}")
+	public List<String> NombreMesParam(@PathVariable String anio) {		
+		return VentServ.NombreMesParam(anio);
+	}
+	
+	@GetMapping("/CantidadSemana/{anio}/{mes}")
+	public List<Integer> CantidadSemana(@PathVariable String anio,@PathVariable Integer mes) {		
+		return VentServ.CantidadSemana(anio,mes);
+	}
+	
+	@GetMapping("/NombreSemana/{anio}/{mes}")
+	public List<String> NombreSemana(@PathVariable String anio,@PathVariable Integer mes) {		
+		return VentServ.NombreSemana(anio,mes);
+	}
+	
+	@GetMapping("/CantidadSemanaOtro/{mes}")
+	public List<Integer> CantidadSemanaOtro(@PathVariable Integer mes) {		
+		return VentServ.CantidadSemanaOtro(mes);
+	}
+	
+	@GetMapping("/NombreSemanaOtro/{mes}")
+	public List<String> NombreSemanaOtro(@PathVariable Integer mes) {		
+		return VentServ.NombreSemanaOtro(mes);
+	}
+	
+	@GetMapping("/CantidadTop10Anio/{anio}")
+	public List<Integer> CantidadTop10Anio(@PathVariable String anio) {		
+		return VentServ.CantidadTop10Anio(anio);
+	}
+	
+	@GetMapping("/NombresTop10Anio/{anio}")
+	public List<String> NombresTop10Anio(@PathVariable String anio) {		
+		return VentServ.NombresTop10Anio(anio);
+	}
+	
+	@GetMapping("/CantidadTop10Anio1/{mes}")
+	public List<Integer> CantidadTop10Anio1(@PathVariable Integer mes) {		
+		return VentServ.CantidadTop10Anio1(mes);
+	}
+	
+	@GetMapping("/NombresTop10Anio1/{mes}")
+	public List<String> NombresTop10Anio1(@PathVariable Integer mes) {		
+		return VentServ.NombresTop10Anio1(mes);
+	}
+	
+	@GetMapping("/CantidadTop10Anio2/{anio}/{mes}")
+	public List<Integer> CantidadTop10Anio2(@PathVariable String anio,@PathVariable Integer mes) {		
+		return VentServ.CantidadTop10Anio2(anio,mes);
+	}
+	
+	@GetMapping("/NombresTop10Anio2/{anio}/{mes}")
+	public List<String> NombresTop10Anio2(@PathVariable String anio,@PathVariable Integer mes) {		
+		return VentServ.NombresTop10Anio2(anio,mes);
+	}
+	
 
 }
