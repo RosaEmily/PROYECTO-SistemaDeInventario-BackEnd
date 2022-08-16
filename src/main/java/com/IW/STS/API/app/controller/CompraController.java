@@ -192,5 +192,35 @@ public class CompraController {
 	public List<Compra> DetalleProducto() {		
 		return ComServ.findByEstado(true);
 	}
+	
+	@GetMapping("/Egresos")
+	public Double Egresos() {		
+		return ComServ.Egresos();
+	}
+	
+	@GetMapping("/Ingresos")
+	public Double Ingresos() {		
+		return ComServ.Ingresos();
+	}
+	
+	@GetMapping("/EgresosAnio")
+	public List<String> EgresosAnio() {		
+		return ComServ.EgresosAnio();
+	}
+	
+	@GetMapping("/IngresosAnio")
+	public List<String> IngresosAnio() {		
+		return ComServ.IngresosAnio();
+	}
+	
+	@GetMapping("/EgresosProveedor")
+	public List<String> EgresosProveedor() {		
+		return ComServ.EgresosProveedor();
+	}
+	
+	@GetMapping("/IngresosCliente")
+	public List<String> IngresosCliente() {		
+		return ComServ.IngresosCliente();
+	}
 
 }

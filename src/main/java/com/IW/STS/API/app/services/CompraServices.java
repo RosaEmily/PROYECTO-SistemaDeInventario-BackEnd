@@ -37,5 +37,40 @@ public interface CompraServices  extends JpaRepository<Compra,Integer> {
 	@Transactional
 	@Query(value="Delete from detalle_producto_compra WHERE id_compra=:id", nativeQuery=true)
 	void EliminarDetalle(@Param("id") int id);
+	
+	@Query(value="SELECT SUM(dpc.cantidad*dpc.precio*c.tipo_cambio) as total FROM compra c inner JOIN detalle_producto_compra dpc ON c.id_compra=dpc.id_compra WHERE c.estado=true", nativeQuery=true)
+	Double Egresos();
+	
+	@Query(value="SELECT SUM(dpv.cantidad*dpv.precio*v.tipo_cambio) as total FROM venta v inner JOIN detalle_producto_venta dpv ON v.id_venta=dpv.id_venta WHERE v.estado=true", nativeQuery=true)
+	Double Ingresos();
+	
+	@Query(value="SELECT YEAR(v.created_at) as anio,SUM(dpv.cantidad*dpv.precio*v.tipo_cambio) as total FROM venta v inner JOIN detalle_producto_venta dpv ON v.id_venta=dpv.id_venta \r\n"
+			+ "WHERE v.estado=true\r\n"
+			+ "GROUP BY YEAR(v.created_at)\r\n"
+			+ "ORDER BY YEAR(v.created_at)", nativeQuery=true)
+	List<String> IngresosAnio();
+	
+	@Query(value="SELECT YEAR(c.created_at) as anio,SUM(dpc.cantidad*dpc.precio*c.tipo_cambio) as total FROM compra c inner JOIN detalle_producto_compra dpc ON c.id_compra=dpc.id_compra \r\n"
+			+ "WHERE c.estado=true\r\n"
+			+ "GROUP BY YEAR(c.created_at)\r\n"
+			+ "ORDER BY YEAR(c.created_at)", nativeQuery=true)
+	List<String> EgresosAnio();
+	
+	@Query(value="SELECT c.doi as doi,SUM(dpv.cantidad*dpv.precio*v.tipo_cambio) as total FROM venta v inner JOIN detalle_producto_venta dpv ON v.id_venta=dpv.id_venta \r\n"
+			+ "INNER JOIN cliente c ON c.id_cliente=v.id_cliente\r\n"
+			+ "WHERE v.estado=true\r\n"
+			+ "GROUP BY c.doi\r\n"
+			+ "ORDER BY YEAR(c.created_at),total DESC\r\n"
+			+ "LIMIT 10", nativeQuery=true)
+	List<String> IngresosCliente();
+	
+	@Query(value="SELECT p.doi as doi,SUM(dpc.cantidad*dpc.precio*c.tipo_cambio) as total FROM compra c inner JOIN detalle_producto_compra dpc ON c.id_compra=dpc.id_compra INNER JOIN proveedor p ON p.id_proveedor=c.id_proveedor\r\n"
+			+ "WHERE c.estado=true\r\n"
+			+ "GROUP BY p.doi\r\n"
+			+ "ORDER BY YEAR(c.created_at),total DESC\r\n"
+			+ "LIMIT 10", nativeQuery=true)
+	List<String> EgresosProveedor();
+
+
 
 }

@@ -92,6 +92,54 @@ public class ProductoController {
 		return lis;
 	}
 	
+	@GetMapping("/reposicion")
+	public ListarFiltro Listar_reposicion(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
+		String codigo="",nombre="",categoria="";
+		int stock=0;
+		 if(!filter.equals("nada")) {
+			 String replace0 = filter.replace("\"",""); 
+			 String replace1 = replace0.replace("[","");
+			 String replace2 = replace1.replace("]","");
+			 String replace3 = replace2.replace("{","");
+			 String replace4 = replace3.replace("}","");
+			 String replace5 = replace4.replace("keyContains:","");
+			 String replace6 = replace5.replace("value:",""); 
+			 String [] vect = replace6.split(",");			 
+			 for(int i=0; i<(vect.length/2);i++) {
+				 if(vect[i*2].equals("codigo")) {
+					 codigo=vect[i*2+1];
+				 }else if(vect[i*2].equals("nombre")) {
+					 nombre=vect[i*2+1];
+				 }else if(vect[i*2].equals("categoria.nombre")) {
+					 categoria=vect[i*2+1];
+				 }else {
+					 stock=Integer.parseInt(vect[i*2+1]);
+				 }
+			 }	 		 		 
+		 }		
+		
+		/*lis.setRows(ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockGreaterThanEqual(true,codigo,nombre,
+				CatSer.findByNombreStartsWith(categoria),stock,PageRequest.of(page-1,limit)).getContent());		
+		fil.setLimit(limit);
+		fil.setPage(page);
+		fil.setTotal_pages(ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockGreaterThanEqual(true,codigo,nombre,
+				CatSer.findByNombreStartsWith(categoria),stock,PageRequest.of(page-1,limit)).getTotalPages());
+		fil.setTotal_rows((int) ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockGreaterThanEqual(true,codigo,nombre,
+				CatSer.findByNombreStartsWith(categoria),stock,PageRequest.of(page-1,limit)).getTotalElements());
+		lis.setResponseFilter(fil);*/
+		lis.setRows(ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockLessThanEqual(true,codigo,nombre,
+				CatSer.findByCodigoStartsWith(categoria),10,PageRequest.of(page-1,limit)).getContent());		
+		fil.setLimit(limit);
+		fil.setPage(page);
+		fil.setTotal_pages(ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockLessThanEqual(true,codigo,nombre,
+				CatSer.findByCodigoStartsWith(categoria),10,PageRequest.of(page-1,limit)).getTotalPages());
+		fil.setTotal_rows((int) ProSer.findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockLessThanEqual(true,codigo,nombre,
+				CatSer.findByCodigoStartsWith(categoria),10,PageRequest.of(page-1,limit)).getTotalElements());
+		lis.setResponseFilter(fil);
+		
+		return lis;
+	}
+	
 	@GetMapping("/all")
 	public List<Producto> ListarAll() {		
 		return ProSer.findAll();
@@ -135,5 +183,10 @@ public class ProductoController {
 		ProSer.findById(id).get().setDeleted_at(LocalDate.now());
 		ProSer.save(ProSer.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
+	}
+	
+	@GetMapping("/cantidad")
+	public Integer cantidad() {		
+		return ProSer.findByEstado(true).size();
 	}
 }

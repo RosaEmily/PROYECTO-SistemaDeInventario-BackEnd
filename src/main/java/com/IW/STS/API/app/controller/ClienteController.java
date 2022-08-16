@@ -110,6 +110,11 @@ public class ClienteController {
 		CliSer.findById(id).get().setDeleted_at(LocalDate.now());
 		CliSer.save(CliSer.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
-	}	
+	}
+	
+	@GetMapping("/cantidad")
+	public Integer cantidad() {		
+		return CliSer.findByEstado(true).size();
+	}
 
 }

@@ -127,5 +127,10 @@ public class ProveedorController {
 		return ResponseEntity.status(HttpStatus.OK).body("200");
 	}
 	
+	@GetMapping("/cantidad")
+	public Integer cantidad() {		
+		return ProSer.findByEstado(true).size();
+	}
+	
 
 }

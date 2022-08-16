@@ -16,6 +16,9 @@ public interface ProductoServices extends JpaRepository<Producto,Integer> {
 	List<Producto> findByEstado(Boolean estado);
 	
 	Page<Producto> findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockGreaterThanEqual
+	(Boolean estado,String codigo,String nombre,Collection<Categoria> categoria,Integer stock,PageRequest pageRequest);
+	
+	Page<Producto> findByEstadoAndCodigoStartsWithAndNombreStartsWithAndCategoriaInAndStockLessThanEqual
 	(Boolean estado,String codigo,String nombre,Collection<Categoria> categoria,Integer stock,PageRequest pageRequest);	
 	
 	Producto findByCodigo(String codigo);

@@ -21,7 +21,10 @@ public interface ProveedorServices extends JpaRepository<Proveedor,Integer>{
 	
 	List<Proveedor> findByNombreStartsWith(String nombre);
 	
-	Proveedor findByIdNotInAndDoi(Collection<Integer> id,String doi);	
+	Proveedor findByIdNotInAndDoi(Collection<Integer> id,String doi);
+	
+	List<Proveedor> findByEstado(Boolean estado);
+
 
 	
 }

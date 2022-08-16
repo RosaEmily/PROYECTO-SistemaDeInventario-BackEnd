@@ -36,6 +36,9 @@ public interface ClienteServices extends JpaRepository<Cliente,Integer> {
 			+ "	FROM Cliente WHERE estado=true ;", nativeQuery=true)
 	Page<Cliente> Listar(PageRequest page2Request);
 	
+	List<Cliente> findByEstado(Boolean estado);
+
+	
 
 	
 
