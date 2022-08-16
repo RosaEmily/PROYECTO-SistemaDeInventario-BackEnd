@@ -189,4 +189,9 @@ public class ProductoController {
 	public Integer cantidad() {		
 		return ProSer.findByEstado(true).size();
 	}
+	
+	@GetMapping("/productoABC")
+	public List<String> productoABC() {		
+		return ProSer.productoABC();
+	}
 }
