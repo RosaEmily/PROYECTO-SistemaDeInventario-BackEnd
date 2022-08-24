@@ -45,6 +45,7 @@ public class Compra {
 	private String  descripcion;
 	
 	@Column(nullable=false)  private String  tipodoc;
+	@Column(nullable=true)  private String  desctipo;
 	@Column(nullable=false,name="tipo_cambio")  private Double  tipocambio;
 	@Column(nullable=false)  private Double  total;
 	@Column(nullable=false)  private Boolean  estado=true;
@@ -189,5 +190,14 @@ public class Compra {
 	public void setTotal(Double total) {
 		this.total = total;
 	}
+
+	public String getDesctipo() {
+		return desctipo;
+	}
+
+	public void setDesctipo(String desctipo) {
+		this.desctipo = desctipo;
+	}
+	
 
 }

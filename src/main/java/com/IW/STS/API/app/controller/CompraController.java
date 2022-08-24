@@ -90,7 +90,7 @@ public class CompraController {
 	
 	@PostMapping("")
 	public ResponseEntity<String> Guardar(@RequestBody() Compra C) {
-		if(ComServ.findByCorrelativoAndSerie(C.getCorrelativo(),C.getSerie())!=null) {
+		if(ComServ.findByCorrelativoAndSerieAndTipodoc(C.getCorrelativo(),C.getSerie(),C.getTipodoc())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
 			Compra com = new Compra();
@@ -104,13 +104,12 @@ public class CompraController {
 			com.setProveedor(C.getProveedor());
 			com.setTotal(C.getTotal());
 			com.setTipodoc(C.getTipodoc());
-			
+			com.setDesctipo(C.getDesctipo());
 			for(int i=0; i<C.getDetalle_producto().size();i++) {
 				DetalleProductoCompra dp = new DetalleProductoCompra();
 				dp.setCantidad(C.getDetalle_producto().get(i).getCantidad());
 				dp.setPrecio(C.getDetalle_producto().get(i).getPrecio());
-				dp.setProducto(C.getDetalle_producto().get(i).getProducto());
-				
+				dp.setProducto(C.getDetalle_producto().get(i).getProducto());				
 				Producto P = ProSer.getById(C.getDetalle_producto().get(i).getProducto().getId());
 				Integer cantidad=P.getStock() + C.getDetalle_producto().get(i).getCantidad();
 				P.setStock(cantidad);
@@ -145,10 +144,15 @@ public class CompraController {
 		return ComServ.ListCompra();
 	}
 	
+	@GetMapping("/list/{doc}")
+	public String ListarCompras(@PathVariable  String doc) {						
+		return ComServ.SerieCorrelativo(doc);
+	}
+	
 	@PutMapping("/{id}")
 	public ResponseEntity<String> Update(@RequestBody() Compra C,@PathVariable  Integer id) {
 		Collection<Integer> idCol = Arrays.asList(id);
-		if(ComServ.findByIdNotInAndCorrelativoAndSerie(idCol,C.getCorrelativo(),C.getSerie())!=null) {
+		if(ComServ.findByIdNotInAndCorrelativoAndSerieAndTipodoc(idCol,C.getCorrelativo(),C.getSerie(),C.getTipodoc())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {			
 			Compra com = ComServ.getById(id);
@@ -174,8 +178,7 @@ public class CompraController {
 				DetalleProductoCompra dp = new DetalleProductoCompra();
 				dp.setCantidad(C.getDetalle_producto().get(i).getCantidad());
 				dp.setPrecio(C.getDetalle_producto().get(i).getPrecio());
-				dp.setProducto(C.getDetalle_producto().get(i).getProducto());
-				
+				dp.setProducto(C.getDetalle_producto().get(i).getProducto());				
 				Producto P = ProSer.getById(C.getDetalle_producto().get(i).getProducto().getId());
 				Integer cantidad=P.getStock() + C.getDetalle_producto().get(i).getCantidad();
 				P.setStock(cantidad);

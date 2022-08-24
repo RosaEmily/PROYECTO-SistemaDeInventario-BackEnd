@@ -23,15 +23,19 @@ public interface CompraServices  extends JpaRepository<Compra,Integer> {
 	List<Compra> findByEstadoAndSerieStartsWithAndCorrelativoStartsWithAndProveedorIn
 	(Boolean estado,String serie,String correlativo,Collection<Proveedor> proveedor);
 	
-	Compra findByCorrelativoAndSerie(String correlativo,String serie);
+	Compra findByCorrelativoAndSerieAndTipodoc(String correlativo,String serie,String tipodoc);
 	
-	Compra findByIdNotInAndCorrelativoAndSerie(Collection<Integer> id,String correlativo,String serie);
+	Compra findByIdNotInAndCorrelativoAndSerieAndTipodoc(Collection<Integer> id,String correlativo,String serie,String tipodoc);
 	
 	List<Compra> findByEstado(Boolean estado);
 	
 	@Query(value="SELECT C FROM Compra C ")
 	List<Compra> ListCompra();
 	
+	@Query(value="SELECT serie,correlativo FROM compra WHERE tipodoc=:doc\r\n"
+			+ "ORDER BY id_compra DESC\r\n"
+			+ "LIMIT 1", nativeQuery=true)
+	String SerieCorrelativo(String doc);
 	
 	@Modifying
 	@Transactional

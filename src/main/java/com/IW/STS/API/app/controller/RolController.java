@@ -22,16 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
-import com.IW.STS.API.app.models.Rol;
-import com.IW.STS.API.app.services.RolServices;
+import com.IW.STS.API.app.models.Role;
+import com.IW.STS.API.app.security.repository.RoleRepository;
 
 @RestController
 @RequestMapping("api/rol")
 public class RolController {
 	
 
-	@Autowired
-	private RolServices RolSer;
+    @Autowired
+	RoleRepository RolSer;
 	
 	@Autowired
 	private Filtro fil;
@@ -41,7 +41,7 @@ public class RolController {
 	
 
 	@GetMapping("/listar")
-	public List<Rol> listAll(){
+	public List<Role> listAll(){
 		return RolSer.findByEstado(true);		
 	}
 	
@@ -58,24 +58,24 @@ public class RolController {
 			 String replace6 = replace5.replace("value:",""); 
 			 String [] vect = replace6.split(",");			 
 			 for(int i=0; i<(vect.length/2);i++) {
-				 if(vect[i*2].equals("rol")) {
+				 if(vect[i*2].equals("name")) {
 					 rol=vect[i*2+1];
 				 }
 			 }	 		 		 
 		 }		
-		lis.setRows(RolSer.findByEstadoAndRolStartsWith(true,rol,PageRequest.of(page-1,limit)).getContent());		
+		lis.setRows(RolSer.findByEstadoAndNameStartsWith(true,rol,PageRequest.of(page-1,limit)).getContent());		
 		fil.setLimit(limit);
 		fil.setPage(page);
-		fil.setTotal_pages(RolSer.findByEstadoAndRolStartsWith(true,rol,PageRequest.of(page-1,limit)).getTotalPages());
-		fil.setTotal_rows((int) RolSer.findByEstadoAndRolStartsWith(true,rol,PageRequest.of(page-1,limit)).getTotalElements());
+		fil.setTotal_pages(RolSer.findByEstadoAndNameStartsWith(true,rol,PageRequest.of(page-1,limit)).getTotalPages());
+		fil.setTotal_rows((int) RolSer.findByEstadoAndNameStartsWith(true,rol,PageRequest.of(page-1,limit)).getTotalElements());
 		lis.setResponseFilter(fil);		 
 		return lis;
 	}
 	
 	@PostMapping("")
-	public ResponseEntity<String> Guardar(@RequestBody Rol r) {
+	public ResponseEntity<String> Guardar(@RequestBody Role r) {
 
-		if(RolSer.findByRol(r.getRol())!=null) {
+		if(RolSer.findByName(r.getName())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
 			RolSer.save(r);
@@ -84,14 +84,19 @@ public class RolController {
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Rol> IdInfo(@PathVariable  Integer id) {		
+	public Optional<Role> IdInfo(@PathVariable  Integer id) {		
 		return RolSer.findById(id);
 	}
 	
+	@GetMapping("/permisos/{id}")
+	public List<String> Rol(@PathVariable  Integer id) {		
+		return RolSer.Permisos(id);
+	}
+	
 	@PutMapping("/{id}")
-	public ResponseEntity<String> Editar(@RequestBody Rol r,@PathVariable  Integer id) {
+	public ResponseEntity<String> Editar(@RequestBody Role r,@PathVariable  Integer id) {
 		Collection<Integer> idCol = Arrays.asList(id);
-		if(RolSer.findByIdNotInAndRol(idCol,r.getRol())!=null) {
+		if(RolSer.findByIdNotInAndName(idCol,r.getName())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
 			r.setId(id);			

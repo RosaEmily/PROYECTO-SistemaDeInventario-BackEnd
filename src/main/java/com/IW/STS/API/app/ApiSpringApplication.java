@@ -20,6 +20,9 @@ public class ApiSpringApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**").allowedOrigins("http://localhost:8080/").allowedMethods(CorsConfiguration.ALL).allowedHeaders(CorsConfiguration.ALL);
+				/*
+				registry.addMapping("/**").allowedOrigins("http://44.192.43.78/").allowedMethods(CorsConfiguration.ALL).allowedHeaders(CorsConfiguration.ALL);
+				*/
 			}
 		};
 	}	
