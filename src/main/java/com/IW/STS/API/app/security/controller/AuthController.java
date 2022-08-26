@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +65,9 @@ public class AuthController {
   @Autowired
   JwtUtils jwtUtils;
   
+  @Value("${apispring.app.IP.FOTO}")
+  private String IP;
+  
   	@Autowired
 	private Filtro fil;
 	
@@ -79,7 +83,6 @@ public class AuthController {
 
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
     SecurityContextHolder.getContext().setAuthentication(authentication);
     String jwt = jwtUtils.generateJwtToken(authentication);
     
@@ -120,7 +123,7 @@ public class AuthController {
     user.setFoto(signUpRequest.getFoto());
     user.setNombre(signUpRequest.getNombre());
     user.setPassword(encoder.encode("password"));
-    user.setFoto("http://localhost:4001/foto_usuario/perfil_anonimo.png");
+    user.setFoto("http://"+IP+"/foto_usuario/perfil_anonimo.png");
     user.setRoles(signUpRequest.getRole());
     userRepository.save(user);
 
@@ -152,7 +155,7 @@ public class AuthController {
 				e.printStackTrace();
 			}
 		}
-		u.setFoto("http://localhost:4001/foto_usuario/"+uniqueFilename);
+		u.setFoto("http://"+IP+"/foto_usuario/"+uniqueFilename);
 		u.setId(id);
 		u.setNombre(nombres);
 		u.setApellido(apellido);

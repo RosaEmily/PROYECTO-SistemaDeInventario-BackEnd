@@ -22,11 +22,16 @@ public interface VentaServices extends JpaRepository<Venta,Integer> {
 	List<Venta> findByEstadoAndSerieStartsWithAndCorrelativoStartsWithAndClienteIn
 	(Boolean estado,String serie,String correlativo,Collection<Cliente> cliente);
 	
-	Venta findByCorrelativoAndSerie(String correlativo,String serie);
+	Venta findByCorrelativoAndSerieAndTipodoc(String correlativo,String serie,String tipodoc);
 	
-	Venta findByIdNotInAndCorrelativoAndSerie(Collection<Integer> id,String correlativo,String serie);
+	Venta findByIdNotInAndCorrelativoAndSerieAndTipodoc(Collection<Integer> id,String correlativo,String serie,String tipodoc);
 	
 	List<Venta> findByEstado(Boolean estado);
+	
+	@Query(value="SELECT serie,correlativo FROM venta WHERE tipodoc=:doc\r\n"
+			+ "ORDER BY id_venta DESC\r\n"
+			+ "LIMIT 1", nativeQuery=true)
+	String SerieCorrelativo(String doc);
 	
 	@Query(value="SELECT C FROM Compra C ")
 	List<Venta> ListCompra();

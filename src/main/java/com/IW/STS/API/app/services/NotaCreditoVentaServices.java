@@ -15,6 +15,7 @@ public interface NotaCreditoVentaServices extends JpaRepository<NotaCreditoVenta
 	
 	Page<NotaCreditoVenta> findByEstadoAndVentaIn(Boolean estado,Collection<Venta> compra,PageRequest pageRequest);
 	
+	Boolean existsByEstadoAndVenta(Boolean estado,Venta venta);
 	
 	List<NotaCreditoVenta> findByEstadoAndVentaIn(Boolean estado,Collection<Venta> compra);
 	

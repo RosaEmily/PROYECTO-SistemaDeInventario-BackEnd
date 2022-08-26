@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -42,6 +43,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		
 	  @Autowired
 	  UserDetailsServiceImpl userDetailsService;
+	  
+	  @Value("${apispring.app.IP.FOTO}")
+	  private String IP;
 
 	  @Autowired
 	  private AuthEntryPointJwt unauthorizedHandler;
@@ -169,7 +173,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 			
 			if(!userRepository.existsByUsername("ADMIN")) {
 				User usu=new User();
-				usu.setFoto("http://localhost:4001/foto_usuario/perfil_anonimo.png");
+				usu.setFoto("http://"+IP+"/foto_usuario/perfil_anonimo.png");
 				usu.setPassword(encoder.encode("password"));
 				usu.setEmail("admin@gmail.com");
 				usu.setApellido("ADMIN");

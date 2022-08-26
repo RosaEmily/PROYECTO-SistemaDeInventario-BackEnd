@@ -27,6 +27,7 @@ import com.IW.STS.API.app.models.Producto;
 import com.IW.STS.API.app.services.VentaServices;
 import com.IW.STS.API.app.services.ProductoServices;
 import com.IW.STS.API.app.services.ClienteServices;
+import com.IW.STS.API.app.services.NotaCreditoVentaServices;
 
 
 @RestController
@@ -38,6 +39,10 @@ public class VentaController {
 	
 	@Autowired
 	private ProductoServices ProSer;
+	
+
+	@Autowired
+	private NotaCreditoVentaServices nccvs;
 	
 	@Autowired
 	private ClienteServices ClieSer;
@@ -87,7 +92,7 @@ public class VentaController {
 	
 	@PostMapping("")
 	public ResponseEntity<String> Guardar(@RequestBody() Venta C) {
-		if(VentServ.findByCorrelativoAndSerie(C.getCorrelativo(),C.getSerie())!=null) {
+		if(VentServ.findByCorrelativoAndSerieAndTipodoc(C.getCorrelativo(),C.getSerie(),C.getTipodoc())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {
 			Venta com = new Venta();
@@ -101,7 +106,7 @@ public class VentaController {
 			com.setCliente(C.getCliente());
 			com.setTotal(C.getTotal());
 			com.setTipodoc(C.getTipodoc());
-			
+			com.setDesctipo(C.getDesctipo());			
 			for(int i=0; i<C.getDetalle_producto().size();i++) {
 				DetalleProductoVenta dp = new DetalleProductoVenta();
 				dp.setCantidad(C.getDetalle_producto().get(i).getCantidad());
@@ -121,15 +126,25 @@ public class VentaController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> Eliminar(@PathVariable  Integer id) {
-		VentServ.findById(id).get().setEstado(false);
-		VentServ.findById(id).get().setDeleted_at(LocalDate.now());
-		VentServ.save(VentServ.findById(id).get());				
-		return ResponseEntity.status(HttpStatus.OK).body("200");
+		if(nccvs.existsByEstadoAndVenta(true, VentServ.findById(id).get())) {
+			return ResponseEntity.status(HttpStatus.OK).body("201");
+		}else {
+			VentServ.findById(id).get().setEstado(false);
+			VentServ.findById(id).get().setDeleted_at(LocalDate.now());
+			VentServ.save(VentServ.findById(id).get());				
+			return ResponseEntity.status(HttpStatus.OK).body("200");
+		}
+	
 	}
 	
 	@GetMapping("/{id}")
 	public Venta Editar(@PathVariable  Integer id) {						
 		return VentServ.findById(id).get();
+	}
+	
+	@GetMapping("/list/{doc}")
+	public String ListarCompras(@PathVariable  String doc) {						
+		return VentServ.SerieCorrelativo(doc);
 	}
 	
 	@GetMapping("/all")
@@ -144,8 +159,11 @@ public class VentaController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<String> Update(@RequestBody() Venta C,@PathVariable  Integer id) {
+		if(nccvs.existsByEstadoAndVenta(true, VentServ.findById(id).get())) {
+			return ResponseEntity.status(HttpStatus.OK).body("401");
+		}
 		Collection<Integer> idCol = Arrays.asList(id);
-		if(VentServ.findByIdNotInAndCorrelativoAndSerie(idCol,C.getCorrelativo(),C.getSerie())!=null) {
+		if(VentServ.findByIdNotInAndCorrelativoAndSerieAndTipodoc(idCol,C.getCorrelativo(),C.getSerie(),C.getTipodoc())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {			
 			Venta com = VentServ.getById(id);

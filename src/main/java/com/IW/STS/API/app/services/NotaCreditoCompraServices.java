@@ -16,7 +16,7 @@ public interface NotaCreditoCompraServices extends JpaRepository<NotaCreditoComp
 	Page<NotaCreditoCompra> findByEstadoAndCompraIn(Boolean estado,Collection<Compra> compra,PageRequest pageRequest);
 	
 	
-	List<NotaCreditoCompra> findByEstadoAndCompraIn(Boolean estado,Collection<Compra> compra);
+	Boolean existsByEstadoAndCompra(Boolean estado,Compra compra);
 	
 	@Query("SELECT C FROM Compra C WHERE NOT EXISTS (SELECT NCC.compra FROM NotaCreditoCompra NCC WHERE NCC.estado=true AND C=NCC.compra) AND C.estado=True")
 	List<Compra> metodoCompra();

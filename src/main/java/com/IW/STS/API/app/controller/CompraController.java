@@ -28,6 +28,7 @@ import com.IW.STS.API.app.models.ListarFiltro;
 import com.IW.STS.API.app.models.Producto;
 import com.IW.STS.API.app.models.DetalleProductoCompra;
 import com.IW.STS.API.app.services.CompraServices;
+import com.IW.STS.API.app.services.NotaCreditoCompraServices;
 import com.IW.STS.API.app.services.ProductoServices;
 import com.IW.STS.API.app.services.ProveedorServices;
 
@@ -44,6 +45,9 @@ public class CompraController {
 	
 	@Autowired
 	private ProveedorServices ProvSer;
+	
+	@Autowired
+	private NotaCreditoCompraServices nccs;	
 	
 	@Autowired
 	private Filtro fil;
@@ -122,11 +126,15 @@ public class CompraController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> Eliminar(@PathVariable  Integer id) {
-		ComServ.findById(id).get().setEstado(false);
-		ComServ.findById(id).get().setDeleted_at(LocalDate.now());
-		ComServ.save(ComServ.findById(id).get());				
-		return ResponseEntity.status(HttpStatus.OK).body("200");
+	public ResponseEntity<String> Eliminar(@PathVariable  Integer id) {		
+		if(nccs.existsByEstadoAndCompra(true, ComServ.findById(id).get())) {
+			return ResponseEntity.status(HttpStatus.OK).body("201");
+		}else {
+			ComServ.findById(id).get().setEstado(false);
+			ComServ.findById(id).get().setDeleted_at(LocalDate.now());
+			ComServ.save(ComServ.findById(id).get());
+			return ResponseEntity.status(HttpStatus.OK).body("200");
+		}
 	}
 	
 	@GetMapping("/{id}")
@@ -152,6 +160,9 @@ public class CompraController {
 	@PutMapping("/{id}")
 	public ResponseEntity<String> Update(@RequestBody() Compra C,@PathVariable  Integer id) {
 		Collection<Integer> idCol = Arrays.asList(id);
+		if(nccs.existsByEstadoAndCompra(true, ComServ.findById(id).get())) {
+			return ResponseEntity.status(HttpStatus.OK).body("401");
+		}
 		if(ComServ.findByIdNotInAndCorrelativoAndSerieAndTipodoc(idCol,C.getCorrelativo(),C.getSerie(),C.getTipodoc())!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body("400");
 		}else {			
@@ -190,7 +201,6 @@ public class CompraController {
 		}		
 	}
 	
-
 	@GetMapping("/detalle")
 	public List<Compra> DetalleProducto() {		
 		return ComServ.findByEstado(true);

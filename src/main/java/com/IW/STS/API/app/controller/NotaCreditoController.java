@@ -150,6 +150,7 @@ public class NotaCreditoController {
 		
 		return lis;
 	}
+	
 	@PostMapping("/compra")
 	public ResponseEntity<String> GuardarCompra(@RequestBody() NotaCreditoCompra ncc){
 		nccs.save(ncc);
