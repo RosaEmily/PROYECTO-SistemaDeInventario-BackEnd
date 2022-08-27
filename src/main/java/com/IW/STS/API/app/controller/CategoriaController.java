@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.IW.STS.API.app.models.Categoria;
+import com.IW.STS.API.app.models.Cliente;
 import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
 import com.IW.STS.API.app.services.CategoriaServices;
@@ -108,6 +109,11 @@ public class CategoriaController {
 		CatSer.findById(id).get().setDeleted_at(LocalDate.now());
 		CatSer.save(CatSer.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
+	}
+	
+	@GetMapping("/all")
+	public List<Categoria> ListarAll() {		
+		return CatSer.findAll();
 	}
 
 }

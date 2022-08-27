@@ -43,7 +43,7 @@ public class ProductoController {
 	@Autowired
 	private CategoriaServices CatSer;
 	
-	
+
 	@GetMapping("")
 	public ListarFiltro Listar(@RequestParam Integer limit,@RequestParam Integer page,@RequestParam String filter) {		
 		String codigo="",nombre="",categoria="";

@@ -249,4 +249,9 @@ public class AuthController {
 		}		
 	}
 	
+	@GetMapping("/all")
+	public List<User> ListarAll() {		
+		return userRepository.findAll();
+	}
+	
 }

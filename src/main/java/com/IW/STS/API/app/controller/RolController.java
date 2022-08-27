@@ -113,5 +113,10 @@ public class RolController {
 		RolSer.save(RolSer.findById(id).get());				
 		return ResponseEntity.status(HttpStatus.OK).body("200");
 	}
+	
+	@GetMapping("/all")
+	public List<Role> ListarAll() {		
+		return RolSer.findAll();
+	}
 
 }
