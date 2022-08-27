@@ -21,6 +21,7 @@ import com.IW.STS.API.app.models.Filtro;
 import com.IW.STS.API.app.models.ListarFiltro;
 import com.IW.STS.API.app.models.NotaCreditoCompra;
 import com.IW.STS.API.app.models.NotaCreditoVenta;
+import com.IW.STS.API.app.models.User;
 import com.IW.STS.API.app.models.Venta;
 import com.IW.STS.API.app.services.ClienteServices;
 import com.IW.STS.API.app.services.CompraServices;
@@ -161,6 +162,16 @@ public class NotaCreditoController {
 	public ResponseEntity<String> GuardarCompra(@RequestBody() NotaCreditoVenta ncc){
 		nccvs.save(ncc);
 		return ResponseEntity.status(HttpStatus.CREATED).body("201");		
+	}
+	
+	@GetMapping("/compra/all")
+	public List<NotaCreditoCompra> ListarAllCompra() {		
+		return nccs.findAll();
+	}
+	
+	@GetMapping("/venta/all")
+	public List<NotaCreditoVenta> ListarAllVenta() {		
+		return nccvs.findAll();
 	}
 	
 	@GetMapping("/Listcompras")
