@@ -111,10 +111,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 				perm10.setPermiso("Gráficos");
 				permisoServ.save(perm10);
 				
-				Permiso perm11=new Permiso();
-				perm11.setPermiso("Dashboard");
-				permisoServ.save(perm11);
-				
 				Permiso perm12=new Permiso();
 				perm12.setPermiso("P. Reposición");
 				permisoServ.save(perm12);
