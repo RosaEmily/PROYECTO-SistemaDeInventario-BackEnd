@@ -101,40 +101,46 @@ public class AuthController {
                          roles));
   }
 
-  @PostMapping("/signup")
-  public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
-    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-      return ResponseEntity
-          .badRequest()
-          .body("400");
-    }
-
-    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-      return ResponseEntity
-          .badRequest()
-          .body("401");
-    }
-
-    // Create new user's account
-    User user = new User();
-    user.setUsername(signUpRequest.getUsername());
-    user.setEmail(signUpRequest.getEmail());
-    user.setApellido(signUpRequest.getApellido());
-    user.setFoto(signUpRequest.getFoto());
-    user.setNombre(signUpRequest.getNombre());
-    user.setPassword(encoder.encode("password"));
-    user.setFoto("http://"+IP+"/foto_usuario/perfil_anonimo.png");
-    user.setRoles(signUpRequest.getRole());
-    userRepository.save(user);
-
-    return ResponseEntity.ok("201");
-  }
+  	  @PostMapping("/signup")
+	  public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
+	    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+	      return ResponseEntity
+	          .badRequest()
+	          .body("400");
+	    }
+	
+	    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+	      return ResponseEntity
+	          .badRequest()
+	          .body("401");
+	    }
+	
+	    // Create new user's account
+	    User user = new User();
+	    user.setUsername(signUpRequest.getUsername());
+	    user.setEmail(signUpRequest.getEmail());
+	    user.setApellido(signUpRequest.getApellido());
+	    user.setFoto(signUpRequest.getFoto());
+	    user.setNombre(signUpRequest.getNombre());
+	    user.setPassword(encoder.encode("password"));
+	    user.setFoto("http://"+IP+"/foto_usuario/perfil_anonimo.png");
+	    user.setRoles(signUpRequest.getRole());
+	    userRepository.save(user);
+	
+	    return ResponseEntity.ok("201");
+	  }
   
-  @GetMapping("/perfil/{id}")
+  
+  
+  	@GetMapping("/perfil/{id}")
 	public User IdInfo(@PathVariable  Long id) {		
 		return userRepository.findById(id).get();
 	}	
 	
+  	@GetMapping("/password/{id}/{password}")
+	public Boolean ValidarPassword(@PathVariable("id")  Long id,@PathVariable("password")  String password) {		
+		return encoder.matches(password,userRepository.findById(id).get().getPassword());
+	}	
 	
 	@PutMapping("/perfil1/{id}")
 	public ResponseEntity<String> Editarperfil1(@RequestParam(name="file") MultipartFile foto,
