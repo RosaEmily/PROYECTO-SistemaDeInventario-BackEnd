@@ -207,13 +207,21 @@ public class CompraController {
 	}
 	
 	@GetMapping("/Egresos")
-	public Double Egresos() {		
-		return ComServ.Egresos();
+	public Double Egresos() {
+		if(ComServ.Egresos()==null) {
+			return 0.00;
+		}else {
+			return ComServ.Egresos();
+		}
 	}
 	
 	@GetMapping("/Ingresos")
 	public Double Ingresos() {		
-		return ComServ.Ingresos();
+		if(ComServ.Ingresos()==null) {
+			return 0.00;
+		}else {
+			return ComServ.Ingresos();
+		}
 	}
 	
 	@GetMapping("/EgresosAnio")
