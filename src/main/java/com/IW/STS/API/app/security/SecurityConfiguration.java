@@ -80,7 +80,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 				permisoServ.save(perm1);
 				
 				Permiso perm2=new Permiso();
-				perm2.setPermiso("Listar Compras");
+				perm2.setPermiso("Compras");
 				permisoServ.save(perm2);
 				
 				Permiso perm3=new Permiso();
@@ -92,7 +92,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 				permisoServ.save(perm6);
 				
 				Permiso perm4=new Permiso();
-				perm4.setPermiso("Listar Ventas");
+				perm4.setPermiso("Ventas");
 				permisoServ.save(perm4);
 				
 				Permiso perm5=new Permiso();
@@ -100,12 +100,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 				permisoServ.save(perm5);
 				
 				Permiso perm7=new Permiso();
-				perm7.setPermiso("Listar Productos");
-				permisoServ.save(perm7);
-				
-				Permiso perm8=new Permiso();
-				perm8.setPermiso("Agregar Producto");
-				permisoServ.save(perm8);
+				perm7.setPermiso("Productos");
+				permisoServ.save(perm7);			
 				
 				Permiso perm9=new Permiso();
 				perm9.setPermiso("Categorias");
