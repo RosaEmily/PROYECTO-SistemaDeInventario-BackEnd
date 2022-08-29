@@ -89,6 +89,11 @@ public class CategoriaController {
 		return CatSer.findById(id);
 	}
 	
+	@GetMapping("/codigo/{codigo}")
+	public Categoria BuscarCodigo(@PathVariable  String codigo) {
+		return CatSer.findByCodigo(codigo);
+	}
+	
 	@PutMapping("/{id}")
 	public ResponseEntity<String> Editar(@RequestBody Categoria C,@PathVariable  Integer id) {
 		Collection<Integer> idCol = Arrays.asList(id);
