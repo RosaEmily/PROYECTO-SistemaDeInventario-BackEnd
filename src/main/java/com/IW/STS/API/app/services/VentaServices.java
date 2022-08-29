@@ -43,18 +43,18 @@ public interface VentaServices extends JpaRepository<Venta,Integer> {
 	void EliminarDetalle(@Param("id") int id);
 	
 
-	@Query(value="Select COUNT(id_producto) as cantidad \r\n"
+	@Query(value="Select sum(cantidad) as cantidad \r\n"
 			+ "from detalle_producto_venta GROUP BY id_producto\r\n"
-			+ "ORDER BY COUNT(id_producto) DESC LIMIT 10", nativeQuery=true)
+			+ "ORDER BY sum(cantidad) DESC LIMIT 10", nativeQuery=true)
 	List<Integer> CantidadTop10();
 	
 	@Query(value="Select p.nombre as nombres\r\n"
 			+ "from detalle_producto_venta dpv INNER JOIN producto p  \r\n"
 			+ "ON dpv.id_producto=p.id_producto GROUP BY p.id_producto\r\n"
-			+ "ORDER BY COUNT(p.id_producto) DESC LIMIT 10", nativeQuery=true)
+			+ "ORDER BY sum(dpv.cantidad) DESC LIMIT 10", nativeQuery=true)
 	List<String> NombresTop10();
 	
-	@Query(value="Select COUNT(dpv.id_producto) AS CANTIDAD\r\n"
+	@Query(value="Select sum(dpv.cantidad) AS CANTIDAD\r\n"
 			+ "from detalle_producto_venta dpv INNER JOIN venta v \r\n"
 			+ "ON v.id_venta=dpv.id_venta GROUP BY MONTH(v.created_at)\r\n"
 			+ "ORDER BY MONTH(v.created_at)", nativeQuery=true)
@@ -118,7 +118,7 @@ public interface VentaServices extends JpaRepository<Venta,Integer> {
 	List<String> Anio();
 	
 	
-	@Query(value="Select COUNT(dpv.id_producto) AS CANTIDAD\r\n"
+	@Query(value="Select sum(dpv.cantidad) AS CANTIDAD\r\n"
 			+ "from detalle_producto_venta dpv INNER JOIN venta v \r\n"
 			+ "ON v.id_venta=dpv.id_venta WHERE YEAR(v.created_at)=:anio GROUP BY MONTH(v.created_at)\r\n"
 			+ "ORDER BY MONTH(v.created_at)", nativeQuery=true)
@@ -142,7 +142,7 @@ public interface VentaServices extends JpaRepository<Venta,Integer> {
 			+ "			ORDER BY MONTH(v.created_at)", nativeQuery=true)
 	List<String> NombreMesParam(@Param("anio") String anio);
 	
-	@Query(value="Select COUNT(dpv.id_producto) AS CANTIDAD\r\n"
+	@Query(value="Select sum(dpv.cantidad) AS CANTIDAD\r\n"
 			+ "			from detalle_producto_venta dpv INNER JOIN venta v\r\n"
 			+ "			ON v.id_venta=dpv.id_venta WHERE YEAR(v.created_at)=:anio AND MONTH(v.created_at)=:mes GROUP BY (WEEK(v.created_at, 5) - WEEK(DATE_SUB(v.created_at, INTERVAL DAYOFMONTH(v.created_at) - 1 DAY), 5) + 1) ORDER BY (WEEK(v.created_at, 5) - WEEK(DATE_SUB(v.created_at, INTERVAL DAYOFMONTH(v.created_at) - 1 DAY), 5) + 1)", nativeQuery=true)
 	List<Integer> CantidadSemana(@Param("anio") String anio,@Param("mes") Integer mes);
@@ -152,7 +152,7 @@ public interface VentaServices extends JpaRepository<Venta,Integer> {
 			+ "			ON v.id_venta=dpv.id_venta WHERE YEAR(v.created_at)=:anio AND MONTH(v.created_at)=:mes GROUP BY SEMANA ORDER BY SEMANA", nativeQuery=true)
 	List<String> NombreSemana(@Param("anio") String anio,@Param("mes") Integer mes);
 	
-	@Query(value="Select COUNT(dpv.id_producto) AS CANTIDAD\r\n"
+	@Query(value="Select sum(dpv.cantidad) AS CANTIDAD\r\n"
 			+ "			from detalle_producto_venta dpv INNER JOIN venta v\r\n"
 			+ "			ON v.id_venta=dpv.id_venta WHERE MONTH(v.created_at)=:mes GROUP BY (WEEK(v.created_at, 5) - WEEK(DATE_SUB(v.created_at, INTERVAL DAYOFMONTH(v.created_at) - 1 DAY), 5) + 1) ORDER BY (WEEK(v.created_at, 5) - WEEK(DATE_SUB(v.created_at, INTERVAL DAYOFMONTH(v.created_at) - 1 DAY), 5) + 1)", nativeQuery=true)
 	List<Integer> CantidadSemanaOtro(@Param("mes") Integer mes);
@@ -162,34 +162,34 @@ public interface VentaServices extends JpaRepository<Venta,Integer> {
 			+ "			ON v.id_venta=dpv.id_venta WHERE MONTH(v.created_at)=:mes GROUP BY SEMANA ORDER BY SEMANA", nativeQuery=true)
 	List<String> NombreSemanaOtro(@Param("mes") Integer mes);
 	
-	@Query(value="Select COUNT(dpv.id_producto) AS CANTIDAD from detalle_producto_venta dpv INNER JOIN venta v ON v.id_venta=dpv.id_venta INNER JOIN producto p ON dpv.id_producto=p.id_producto\r\n"
+	@Query(value="Select sum(dpv.cantidad) AS CANTIDAD from detalle_producto_venta dpv INNER JOIN venta v ON v.id_venta=dpv.id_venta INNER JOIN producto p ON dpv.id_producto=p.id_producto\r\n"
 			+ "	WHERE YEAR(v.created_at)=:anio GROUP BY dpv.id_producto\r\n"
-			+ "			ORDER BY COUNT(dpv.id_producto) DESC LIMIT 10", nativeQuery=true)
+			+ "			ORDER BY sum(dpv.cantidad) DESC LIMIT 10", nativeQuery=true)
 	List<Integer> CantidadTop10Anio(@Param("anio") String anio);
 	
 	@Query(value="Select p.nombre as nombres from detalle_producto_venta dpv INNER JOIN venta v ON v.id_venta=dpv.id_venta INNER JOIN producto p ON dpv.id_producto=p.id_producto\r\n"
 			+ "	WHERE YEAR(v.created_at)=:anio GROUP BY dpv.id_producto\r\n"
-			+ "			ORDER BY COUNT(dpv.id_producto) DESC LIMIT 10", nativeQuery=true)
+			+ "			ORDER BY sum(dpv.id_producto) DESC LIMIT 10", nativeQuery=true)
 	List<String> NombresTop10Anio(@Param("anio") String anio);
 	
-	@Query(value="Select COUNT(dpv.id_producto) AS CANTIDAD from detalle_producto_venta dpv INNER JOIN venta v ON v.id_venta=dpv.id_venta INNER JOIN producto p ON dpv.id_producto=p.id_producto\r\n"
+	@Query(value="Select sum(dpv.cantidad) AS CANTIDAD from detalle_producto_venta dpv INNER JOIN venta v ON v.id_venta=dpv.id_venta INNER JOIN producto p ON dpv.id_producto=p.id_producto\r\n"
 			+ "	WHERE MONTH(v.created_at)=:mes GROUP BY dpv.id_producto\r\n"
-			+ "			ORDER BY COUNT(dpv.id_producto) DESC LIMIT 10", nativeQuery=true)
+			+ "			ORDER BY sum(dpv.cantidad) DESC LIMIT 10", nativeQuery=true)
 	List<Integer> CantidadTop10Anio1(@Param("mes") Integer mes);
 	
 	@Query(value="Select p.nombre as nombres from detalle_producto_venta dpv INNER JOIN venta v ON v.id_venta=dpv.id_venta INNER JOIN producto p ON dpv.id_producto=p.id_producto\r\n"
 			+ "	WHERE MONTH(v.created_at)=:mes GROUP BY dpv.id_producto\r\n"
-			+ "			ORDER BY COUNT(dpv.id_producto) DESC LIMIT 10", nativeQuery=true)
+			+ "			ORDER BY sum(dpv.cantidad) DESC LIMIT 10", nativeQuery=true)
 	List<String> NombresTop10Anio1(@Param("mes") Integer mes);
 	
-	@Query(value="Select COUNT(dpv.id_producto) AS CANTIDAD from detalle_producto_venta dpv INNER JOIN venta v ON v.id_venta=dpv.id_venta INNER JOIN producto p ON dpv.id_producto=p.id_producto\r\n"
+	@Query(value="Select sum(dpv.cantidad) AS CANTIDAD from detalle_producto_venta dpv INNER JOIN venta v ON v.id_venta=dpv.id_venta INNER JOIN producto p ON dpv.id_producto=p.id_producto\r\n"
 			+ "	WHERE YEAR(v.created_at)=:anio AND MONTH(v.created_at)=:mes GROUP BY dpv.id_producto\r\n"
-			+ "			ORDER BY COUNT(dpv.id_producto) DESC LIMIT 10", nativeQuery=true)
+			+ "			ORDER BY sum(dpv.cantidad) DESC LIMIT 10", nativeQuery=true)
 	List<Integer> CantidadTop10Anio2(@Param("anio") String anio,@Param("mes") Integer mes);
 	
 	@Query(value="Select p.nombre as nombres from detalle_producto_venta dpv INNER JOIN venta v ON v.id_venta=dpv.id_venta INNER JOIN producto p ON dpv.id_producto=p.id_producto\r\n"
 			+ "	WHERE YEAR(v.created_at)=:anio AND MONTH(v.created_at)=:mes GROUP BY dpv.id_producto\r\n"
-			+ "			ORDER BY COUNT(dpv.id_producto) DESC LIMIT 10", nativeQuery=true)
+			+ "			ORDER BY sum(dpv.cantidad) DESC LIMIT 10", nativeQuery=true)
 	List<String> NombresTop10Anio2(@Param("anio") String anio,@Param("mes") Integer mes);
 	
 	@Query(value="SELECT p.doi as doi, COUNT(p.id_proveedor) as cantidad FROM compra c \r\n"
